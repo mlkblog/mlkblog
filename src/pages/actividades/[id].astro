@@ -18,9 +18,9 @@ const { Content } = await render(actividad);
 <Layout titulo={d.titulo} descripcion={d.resumen}>
   <article class="pb-24">
     <header class="contenedor flex flex-col gap-6 pt-10 md:pt-14">
-      <a href={ruta("/actividades/")} class="font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8 self-start">Todas las obras sociales</a>
+      <a href={ruta("/actividades/")} class="inline-flex min-h-11 items-center self-start font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8">Todas las obras sociales</a>
       <p class="flex flex-wrap items-center gap-x-3 gap-y-2 text-gris">
-        <a href={ruta(`/actividades/?categoria=${encodeURIComponent(d.categoria)}`)} class:list={['rounded-full px-3 py-0.5 font-semibold', claseCategoria(d.categoria)]}>{d.categoria}</a>
+        <a href={ruta(`/actividades/?categoria=${encodeURIComponent(d.categoria)}`)} class:list={['zona-toque rounded-full px-3 py-0.5 font-semibold', claseCategoria(d.categoria)]}>{d.categoria}</a>
         <time datetime={d.fecha.toISOString()}>{fechaLarga(d.fecha)}</time>
         {d.ejemplo && <span class="rounded-full border border-linea px-3 py-0.5">Crónica de ejemplo</span>}
       </p>
@@ -93,11 +93,11 @@ const { Content } = await render(actividad);
       </section>
     )}
 
-    <dialog class="visor m-auto max-h-[92vh] w-[min(92vw,1200px)] bg-transparent p-0 backdrop:bg-noche/90" data-visor>
+    <dialog class="visor m-auto max-h-[92dvh] w-[min(92vw,1200px)] bg-transparent p-0 backdrop:bg-noche/90" data-visor>
       <form method="dialog" class="flex flex-col gap-3">
         {d.galeria.map((foto, i) => (
           <figure class="hidden flex-col gap-3" data-foto={i}>
-            <Image src={foto.src} alt={foto.alt} widths={[1200, 1600]} sizes="92vw" class="max-h-[78vh] w-full rounded-foto object-contain" />
+            <Image src={foto.src} alt={foto.alt} widths={[1200, 1600]} sizes="92vw" class="max-h-[78dvh] w-full rounded-foto object-contain" />
             <figcaption class="text-white">{foto.alt}</figcaption>
           </figure>
         ))}
@@ -114,7 +114,13 @@ const { Content } = await render(actividad);
 <style>
   .visor[open] { animation: aparecer 0.25s ease-out; }
   @keyframes aparecer { from { opacity: 0; transform: scale(0.97); } }
-  @media (prefers-reduced-motion: reduce) { .visor[open] { animation: none; } }
+  /* Deslizar con el dedo: el gesto horizontal lo maneja la galería, el vertical sigue siendo scroll */
+  .visor [data-foto] { touch-action: pan-y; user-select: none; }
+  .visor [data-foto].entra-der { animation: entra-der 0.22s ease-out; }
+  .visor [data-foto].entra-izq { animation: entra-izq 0.22s ease-out; }
+  @keyframes entra-der { from { opacity: 0.4; transform: translateX(24px); } }
+  @keyframes entra-izq { from { opacity: 0.4; transform: translateX(-24px); } }
+  @media (prefers-reduced-motion: reduce) { .visor[open], .visor [data-foto] { animation: none !important; } }
 </style>
 
 <script>
@@ -123,19 +129,42 @@ const { Content } = await render(actividad);
     if (!visor) return;
     const fotos = [...visor.querySelectorAll<HTMLElement>('[data-foto]')];
     let actual = 0;
-    const mostrar = (i: number) => {
+    const mostrar = (i: number, direccion = 0) => {
       actual = (i + fotos.length) % fotos.length;
-      fotos.forEach((f, j) => { f.classList.toggle('hidden', j !== actual); f.classList.toggle('flex', j === actual); });
+      fotos.forEach((f, j) => {
+        f.classList.toggle('hidden', j !== actual);
+        f.classList.toggle('flex', j === actual);
+        f.classList.remove('entra-der', 'entra-izq');
+      });
+      if (direccion) {
+        const f = fotos[actual];
+        void f.offsetWidth; // reinicia la animación
+        f.classList.add(direccion > 0 ? 'entra-der' : 'entra-izq');
+      }
     };
+
+    // Deslizar a izquierda/derecha para cambiar de foto (umbral 40 px, más horizontal que vertical)
+    let x0 = 0, y0 = 0, arrastrando = false;
+    visor.addEventListener('pointerdown', (e) => {
+      if (!(e.target as HTMLElement).closest('[data-foto]')) return;
+      x0 = e.clientX; y0 = e.clientY; arrastrando = true;
+    });
+    visor.addEventListener('pointerup', (e) => {
+      if (!arrastrando) return;
+      arrastrando = false;
+      const dx = e.clientX - x0, dy = e.clientY - y0;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) mostrar(actual + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+    });
+    visor.addEventListener('pointercancel', () => (arrastrando = false));
     document.querySelectorAll<HTMLButtonElement>('[data-abrir]').forEach((b) =>
       b.addEventListener('click', () => { mostrar(Number(b.dataset.abrir)); visor.showModal(); })
     );
     visor.querySelectorAll<HTMLButtonElement>('[data-mover]').forEach((b) =>
-      b.addEventListener('click', () => mostrar(actual + Number(b.dataset.mover)))
+      b.addEventListener('click', () => mostrar(actual + Number(b.dataset.mover), Number(b.dataset.mover)))
     );
     visor.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') mostrar(actual + 1);
-      if (e.key === 'ArrowLeft') mostrar(actual - 1);
+      if (e.key === 'ArrowRight') mostrar(actual + 1, 1);
+      if (e.key === 'ArrowLeft') mostrar(actual - 1, -1);
     });
     visor.addEventListener('click', (e) => { if (e.target === visor) visor.close(); });
   }

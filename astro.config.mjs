@@ -11,8 +11,9 @@ export default defineConfig({
   site: 'https://mlkblog.github.io',
   base: '/mlkblog',
 
-  // Precarga las páginas al pasar el cursor o tocar un enlace: navegación casi instantánea
-  prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
+  // Precarga cada página cuando su enlace aparece en pantalla (funciona en táctil, donde no hay
+  // "hover"). Astro la omite con ahorro de datos activado o conexión lenta. Cada página pesa ~10 KB comprimida.
+  prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
 
   // CSS incrustado en cada página (~5 KB comprimido): elimina la única petición que bloqueaba el primer render
   build: { inlineStylesheets: 'always' },

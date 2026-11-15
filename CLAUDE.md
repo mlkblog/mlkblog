@@ -29,6 +29,16 @@ Auditoría Lighthouse del 15 nov 2026: 99–100 en rendimiento, 100 en accesibil
 - La animación del mosaico usa solo `transform`: el contenido es visible aunque el navegador pause la animación.
 - Fotos reales: súbelas en JPG/PNG de máx. ~2500 px de ancho; Astro genera WebP en varios tamaños.
 
+### Móvil (probado en 320, 360, 390, 414, 768 y 844×390 horizontal)
+
+- Sin desplazamiento horizontal desde 320 px. Por debajo de 360 px se oculta «Inicio» en el menú (el logo lleva al inicio).
+- Todo control táctil mide ≥ 44 px de alto: enlaces sueltos con `inline-flex min-h-11 items-center`; elementos que deben verse pequeños (etiquetas) con la clase `zona-toque`, que amplía el área sin cambiar el tamaño visual.
+- Los efectos `hover:` de Tailwind v4 solo aplican en dispositivos con cursor; en táctil la respuesta es `.btn:active` (se hunde un poco).
+- Precarga `viewport`: las páginas enlazadas visibles se descargan antes del toque. Se omite con ahorro de datos o 2G.
+- Galería: se desliza con el dedo (umbral 40 px), con teclado y con botones.
+- Encabezado fijo solo en pantallas ≥ 640 px de ancho y ≥ 500 px de alto.
+- Medición con CPU 4x y 4G lenta (390×844): 0 cuadros perdidos en scroll, filtros y galería; 1 cuadro en cada cambio de página; respuesta al toque ≤ 24 ms.
+
 ## Cómo publicar una obra social (para becarios)
 
 1. Crea una carpeta en `src/content/actividades/` con el nombre de la URL, p. ej. `2026-03-jornada-salud/`.

@@ -50,7 +50,7 @@ const hayEjemplos = actividades.some((a) => a.data.ejemplo);
   <section class="contenedor flex flex-col gap-10 py-20">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <h2 class="text-4xl font-extrabold sm:text-5xl">Obras sociales recientes</h2>
-      <a href={ruta("/actividades/")} class="font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8">Ver todas</a>
+      <a href={ruta("/actividades/")} class="inline-flex min-h-11 items-center font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8">Ver todas</a>
     </div>
     <div class="grid gap-x-8 gap-y-14 md:grid-cols-3">
       {recientes.map((a, i) => <TarjetaActividad actividad={a} destacada={i === 0} />)}
