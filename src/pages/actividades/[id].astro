@@ -29,7 +29,7 @@ const { Content } = await render(actividad);
     </header>
 
     <div class="contenedor mt-10">
-      <div class="foto-vt overflow-hidden rounded-foto bg-azul" transition:name={`foto-${actividad.id}`}>
+      <div class="foto-vt overflow-hidden rounded-foto bg-azul" data-foto-id={actividad.id} data-foto-principal>
         <Image
           src={d.imagen}
           alt={d.imagenAlt}
@@ -79,7 +79,7 @@ const { Content } = await render(actividad);
     </div>
 
     {d.galeria.length > 0 && (
-      <section class="contenedor mt-20 flex flex-col gap-6" aria-labelledby="titulo-galeria">
+      <section class="cv-auto contenedor mt-20 flex flex-col gap-6" aria-labelledby="titulo-galeria">
         <h2 id="titulo-galeria" class="text-3xl font-extrabold sm:text-4xl">Galería</h2>
         <ul class="grid grid-cols-2 gap-4 md:grid-cols-3">
           {d.galeria.map((foto, i) => (

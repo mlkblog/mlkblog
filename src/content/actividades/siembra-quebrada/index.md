@@ -4,7 +4,7 @@ fecha: 2026-10-25
 ubicacion: "Ronda de la quebrada, vereda San Isidro"
 resumen: "Con la junta de acción comunal y una fundación ambiental sembramos 300 árboles nativos en la ronda de la quebrada y dejamos un plan de cuidado a cargo de los vecinos."
 categoria: "Medio Ambiente"
-imagen: "./portada.svg"
+imagen: "./portada.jpg"
 imagenAlt: "Becarios y vecinos sembrando árboles en la ladera junto a la quebrada"
 beneficiarios: 120
 horasVoluntariado: 96
@@ -13,11 +13,11 @@ aliados:
   - "Fundación ambiental aliada"
 autor: "Equipo de comunicaciones, Becarios MLK"
 galeria:
-  - src: "./galeria-1.svg"
+  - src: "./galeria-1.jpg"
     alt: "Becarios abriendo hoyos para la siembra"
-  - src: "./galeria-2.svg"
+  - src: "./galeria-2.jpg"
     alt: "Vecinos y becarios plantando un árbol juntos"
-  - src: "./galeria-3.svg"
+  - src: "./galeria-3.jpg"
     alt: "Foto grupal al terminar la jornada"
 ejemplo: true
 ---

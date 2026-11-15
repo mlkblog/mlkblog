@@ -4,7 +4,7 @@ fecha: 2026-09-20
 ubicacion: "Biblioteca comunitaria del barrio El Recreo"
 resumen: "Durante seis sábados, los becarios guiamos un club de lectura en español e inglés para niños de 7 a 12 años. Terminamos con una feria de cuentos escritos por ellos."
 categoria: "Educación"
-imagen: "./portada.svg"
+imagen: "./portada.jpg"
 imagenAlt: "Niños y becarios leyendo cuentos en círculo en la biblioteca comunitaria"
 beneficiarios: 42
 horasVoluntariado: 144
@@ -13,11 +13,11 @@ aliados:
   - "Junta de Acción Comunal"
 autor: "Equipo de comunicaciones, Becarios MLK"
 galeria:
-  - src: "./galeria-1.svg"
+  - src: "./galeria-1.jpg"
     alt: "Grupo de niños leyendo en voz alta con una becaria"
-  - src: "./galeria-2.svg"
+  - src: "./galeria-2.jpg"
     alt: "Taller de escritura de cuentos ilustrados"
-  - src: "./galeria-3.svg"
+  - src: "./galeria-3.jpg"
     alt: "Familias en la feria de cuentos del cierre"
 ejemplo: true
 ---

@@ -39,6 +39,16 @@ Auditoría Lighthouse del 15 nov 2026: 99–100 en rendimiento, 100 en accesibil
 - Encabezado fijo solo en pantallas ≥ 640 px de ancho y ≥ 500 px de alto.
 - Medición con CPU 4x y 4G lenta (390×844): 0 cuadros perdidos en scroll, filtros y galería; 1 cuadro en cada cambio de página; respuesta al toque ≤ 24 ms.
 
+### Cambio de sección (no romper)
+
+- Página vieja: desaparece al instante. Página nueva: fundido de 160 ms (`aparecer-pagina` en `global.css`). El grupo `root` va sin animación.
+- El encabezado (`encabezado-vt`) no se anima: queda fijo entre secciones.
+- Transición de foto **solo** entre la tarjeta tocada y su crónica (y de vuelta). Las fotos llevan `data-foto-id`, no `transition:name`: el nombre se asigna en `Layout.astro` (`astro:before-preparation` / `astro:before-swap`). Nunca pongas `transition:name` fijo a elementos repetidos: el navegador los capturaría todos en cada navegación.
+- Las animaciones de entrada (mosaico, contadores) solo corren en la primera visita; al navegar, la clase `navegado` en `<html>` las desactiva.
+- Secciones bajo el pliegue con `cv-auto` (`content-visibility: auto`).
+- Navegadores sin View Transitions: `fallback="swap"` (cambio instantáneo).
+- Imágenes de contenido en JPG/PNG (Astro genera WebP). No uses SVG con patrones como foto: son caros de dibujar en teléfonos.
+
 ## Cómo publicar una obra social (para becarios)
 
 1. Crea una carpeta en `src/content/actividades/` con el nombre de la URL, p. ej. `2026-03-jornada-salud/`.

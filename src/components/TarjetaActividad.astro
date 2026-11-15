@@ -22,9 +22,9 @@ const Titulo = `h${nivel}` as 'h2' | 'h3';
   class:list={['group flex flex-col gap-4 rounded-foto', destacada && 'md:col-span-2']}
   data-categoria={d.categoria}
 >
-  {/* La transición va en el contenedor (que recorta las esquinas), no en la imagen:
-      así la foto viaja ya redondeada entre páginas */}
-  <div class="foto-vt overflow-hidden rounded-foto bg-azul" transition:name={`foto-${actividad.id}`}>
+  {/* La transición de foto va en el contenedor (que recorta las esquinas) y solo se activa en la
+      tarjeta tocada (ver Layout.astro): las demás fotos no se capturan en cada cambio de sección */}
+  <div class="foto-vt overflow-hidden rounded-foto bg-azul" data-foto-id={actividad.id}>
     <Image
       src={d.imagen}
       alt={d.imagenAlt}

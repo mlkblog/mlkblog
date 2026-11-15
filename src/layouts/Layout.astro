@@ -49,14 +49,14 @@ const activo = (href: string) => (href === inicio ? rutaActual === inicio : ruta
     <Font cssVariable="--font-bricolage" preload={[{ weight: '800' }]} />
     <Font cssVariable="--font-source" preload={[{ weight: '400', style: 'normal' }]} />
     <title>{tituloCompleto}</title>
-    <ClientRouter />
+    <ClientRouter fallback="swap" />
   </head>
   <body class="flex min-h-screen flex-col">
     <Patrones />
     <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-sol focus:px-4 focus:py-2">Saltar al contenido</a>
 
     <!-- Fijo arriba solo en pantallas anchas y con altura suficiente (en un teléfono horizontal ocuparía demasiado) -->
-    <header class="relative z-40 bg-white/95 backdrop-blur sm:sticky sm:top-0 [@media(max-height:500px)]:relative" transition:persist>
+    <header class="encabezado-vt relative z-40 bg-white sm:sticky sm:top-0 [@media(max-height:500px)]:relative" transition:persist>
       <div class="contenedor flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-3">
         <a href={ruta("/")} class="flex min-w-0 items-center gap-3">
           <img src={ruta("/logo-mlk-azul.svg")} alt="" width={logo.ancho} height={logo.alto} class="h-12 w-auto shrink-0 min-[380px]:h-14 sm:h-16" />
@@ -88,7 +88,7 @@ const activo = (href: string) => (href === inicio ? rutaActual === inicio : ruta
       <slot />
     </main>
 
-    <footer id="contacto" class="bg-noche text-white">
+    <footer id="contacto" class="cv-auto bg-noche text-white">
       <div class="greca" aria-hidden="true"></div>
       <div class="contenedor grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
         <div class="flex flex-col gap-4">
@@ -112,6 +112,30 @@ const activo = (href: string) => (href === inicio ? rutaActual === inicio : ruta
     </footer>
 
     <script>
+      // Navegación interna: marca la página nueva ANTES de mostrarla, para que las animaciones de
+      // entrada (mosaico, contadores) solo corran en la primera visita y no en cada cambio de sección
+      document.addEventListener('astro:before-swap', (e) => e.newDocument.documentElement.classList.add('navegado'));
+
+      // Transición de foto solo entre la tarjeta tocada y su crónica (y al volver, entre la crónica y su tarjeta).
+      // Nombrar todas las fotos haría que el navegador capture y anime imágenes que no viajan a ningún lado.
+      let fotoQueViaja: string | null = null;
+      document.addEventListener('astro:before-preparation', (e) => {
+        document.querySelectorAll<HTMLElement>('[data-foto-id]').forEach((el) => (el.style.viewTransitionName = ''));
+        // Desde una crónica, la foto principal solo viaja si el destino muestra tarjetas (Inicio o Actividades)
+        const inicio = document.querySelector('nav [data-inicio]')?.getAttribute('href') ?? '/';
+        const destinoConTarjetas = e.to.pathname === inicio || e.to.pathname.endsWith('/actividades/');
+        const origen =
+          (e.sourceElement as HTMLElement | undefined)?.querySelector<HTMLElement>('[data-foto-id]') ??
+          (destinoConTarjetas ? document.querySelector<HTMLElement>('[data-foto-principal]') : null);
+        fotoQueViaja = origen?.dataset.fotoId ?? null;
+        if (origen && fotoQueViaja) origen.style.viewTransitionName = `foto-${fotoQueViaja}`;
+      });
+      document.addEventListener('astro:before-swap', (e) => {
+        if (!fotoQueViaja) return;
+        const destino = e.newDocument.querySelector<HTMLElement>(`[data-foto-id="${CSS.escape(fotoQueViaja)}"]`);
+        if (destino) destino.style.viewTransitionName = `foto-${fotoQueViaja}`;
+      });
+
       // El encabezado persiste entre páginas: actualizamos el enlace activo tras cada navegación
       document.addEventListener('astro:page-load', () => {
         const ruta = location.pathname;

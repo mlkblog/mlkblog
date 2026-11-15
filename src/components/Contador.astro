@@ -17,7 +17,9 @@ const formato = new Intl.NumberFormat('es-CO');
     const els = document.querySelectorAll<HTMLElement>('[data-contador]');
     const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const fmt = new Intl.NumberFormat('es-CO');
-    if (reducir || !('IntersectionObserver' in window)) return;
+    // Solo en la primera visita; al volver a Inicio navegando, las cifras aparecen ya completas
+    const yaVisto = document.documentElement.classList.contains('navegado');
+    if (reducir || yaVisto || !('IntersectionObserver' in window)) return;
     const io = new IntersectionObserver((entradas) => {
       for (const e of entradas) {
         if (!e.isIntersecting) continue;
