@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const becarios = await getCollection('becarios');
+const valores = [
+  { nombre: 'Servicio', patron: 'zigzag', texto: 'Ponemos nuestro tiempo y lo que aprendemos al servicio de quien lo necesita.' },
+  { nombre: 'Justicia', patron: 'rombos', texto: 'Trabajamos para que más personas tengan las mismas oportunidades.' },
+  { nombre: 'No violencia', patron: 'greca', texto: 'Resolvemos los desacuerdos con diálogo y respeto.' },
+  { nombre: 'Liderazgo', patron: 'lineas', texto: 'Damos el primer paso y animamos a otros a darlo con nosotros.' },
+  { nombre: 'Comunidad', patron: 'espiral', texto: 'Hacemos las cosas con la gente, no para la gente.' },
+];
+const iniciales = (n: string) => (n.startsWith('[') ? 'MLK' : n.split(' ').map((p) => p[0]).slice(0, 2).join(''));
+---
+<Layout titulo="Nosotros" descripcion="Quiénes son los Becarios MLK del Centro Colombo Americano: historia del programa, valores y equipo.">
+  <section class="contenedor grid gap-10 pb-16 pt-12 md:grid-cols-[1.2fr_1fr] md:pt-20">
+    <div class="flex flex-col gap-6">
+      <h1 class="text-5xl font-extrabold sm:text-6xl">Una beca que se devuelve en servicio</h1>
+      <p class="prosa text-xl text-gris">
+        El Programa de Becas Martin Luther King Jr. del Centro Colombo Americano apoya a jóvenes con vocación de liderazgo. A cambio, cada cohorte se compromete a diseñar y ejecutar obras sociales con comunidades.
+      </p>
+    </div>
+    <div class="prosa self-end rounded-foto bg-papel p-6 text-base sm:p-8">
+      <h2 class="!mt-0 text-2xl font-extrabold">Historia del programa</h2>
+      <p>[Completar con el equipo del Centro: año de creación del programa, por qué lleva el nombre de Martin Luther King Jr., cuántas cohortes ha tenido y qué incluye la beca.]</p>
+    </div>
+  </section>
+
+  <section class="border-y border-linea bg-papel">
+    <div class="contenedor flex flex-col gap-10 py-20">
+      <div class="flex flex-col gap-3">
+        <h2 class="text-4xl font-extrabold sm:text-5xl">Lo que nos guía</h2>
+        <p class="prosa text-gris">Cinco valores tomados del legado de Martin Luther King Jr. Cada uno lleva uno de los patrones de nuestro logo.</p>
+      </div>
+      <ul class="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-5">
+        {valores.map((v) => (
+          <li class="flex flex-col gap-3">
+            <svg viewBox="0 0 120 44" class="h-11 w-[120px]" aria-hidden="true">
+              <rect x="3" y="3" width="114" height="38" rx="19" fill="#fff" />
+              <rect x="11" y="11" width="98" height="22" rx="11" fill={`url(#p-${v.patron}-a)`} />
+              <rect x="3" y="3" width="114" height="38" rx="19" fill="none" stroke="#273591" stroke-width="5" />
+            </svg>
+            <h3 class="text-2xl font-extrabold">{v.nombre}</h3>
+            <p class="text-gris">{v.texto}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="contenedor flex flex-col gap-10 py-20">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h2 class="text-4xl font-extrabold sm:text-5xl">El equipo</h2>
+      <p class="text-gris">Perfiles de ejemplo: se editan en <code class="rounded bg-papel px-1.5">src/content/becarios.json</code></p>
+    </div>
+    <ul class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {becarios.map(({ data: b }) => (
+        <li class="flex flex-col gap-3 border-t-4 border-azul pt-5">
+          <span class="grid size-20 place-items-center rounded-full bg-cielo font-display text-xl font-extrabold text-azul" aria-hidden="true">{iniciales(b.nombre)}</span>
+          <h3 class="text-xl font-extrabold">{b.nombre}</h3>
+          <p class="text-gris">{b.carrera} · Cohorte {b.cohorte}</p>
+          <p class="italic">«{b.frase}»</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>

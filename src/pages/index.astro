@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Mosaico from '../components/Mosaico.astro';
+import Contador from '../components/Contador.astro';
+import TarjetaActividad from '../components/TarjetaActividad.astro';
+
+const actividades = (await getCollection('actividades')).sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
+const recientes = actividades.slice(0, 3);
+const personas = actividades.reduce((s, a) => s + a.data.beneficiarios, 0);
+const horas = actividades.reduce((s, a) => s + a.data.horasVoluntariado, 0);
+const hayEjemplos = actividades.some((a) => a.data.ejemplo);
+---
+<Layout>
+  <!-- Hero -->
+  <section class="contenedor grid items-center gap-10 pb-16 pt-10 md:grid-cols-[1.15fr_1fr] md:pb-24 md:pt-16">
+    <div class="flex flex-col gap-7">
+      <p class="font-display text-lg font-bold text-gris">Programa de Becas Martin Luther King Jr.</p>
+      <h1 class="text-5xl font-extrabold sm:text-6xl lg:text-7xl">Servir también es una forma de liderar.</h1>
+      <p class="prosa text-xl text-gris">
+        Somos jóvenes becarios del Centro Colombo Americano. Inspirados en el legado de Martin Luther King Jr., organizamos obras sociales con comunidades y aquí contamos qué hicimos, con quién y qué cambió.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a href="/actividades/" class="btn btn-azul">Ver las obras sociales</a>
+        <a href="/nosotros/" class="btn btn-borde">Conocer al equipo</a>
+      </div>
+    </div>
+    <div class="mx-auto w-full max-w-[17rem] sm:max-w-sm md:max-w-none">
+      <Mosaico />
+    </div>
+  </section>
+
+  <!-- Cifras de impacto -->
+  <section class="bg-azul" aria-labelledby="titulo-impacto">
+    <div class="contenedor grid gap-10 py-14 md:grid-cols-[1fr_2.4fr] md:items-end">
+      <div class="flex flex-col gap-3">
+        <h2 id="titulo-impacto" class="text-3xl font-extrabold text-white">Nuestro impacto hasta hoy</h2>
+        <p class="text-cielo">Cifras sumadas automáticamente a partir de las crónicas publicadas.{hayEjemplos && ' Hoy incluyen crónicas de ejemplo.'}</p>
+      </div>
+      <div class="grid gap-8 sm:grid-cols-3">
+        <Contador valor={actividades.length} etiqueta={actividades.length === 1 ? 'obra social' : 'obras sociales'} />
+        <Contador valor={personas} etiqueta="personas acompañadas" />
+        <Contador valor={horas} etiqueta="horas de voluntariado" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Recientes -->
+  <section class="contenedor flex flex-col gap-10 py-20">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h2 class="text-4xl font-extrabold sm:text-5xl">Obras sociales recientes</h2>
+      <a href="/actividades/" class="font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8">Ver todas</a>
+    </div>
+    <div class="grid gap-x-8 gap-y-14 md:grid-cols-3">
+      {recientes.map((a, i) => <TarjetaActividad actividad={a} destacada={i === 0} />)}
+    </div>
+  </section>
+
+  <!-- Cita -->
+  <section class="bg-cielo">
+    <figure class="contenedor flex flex-col gap-6 py-20">
+      <span class="-mb-10 font-display text-[7rem] font-extrabold leading-none text-rojo sm:-mb-14 sm:text-[10rem]" aria-hidden="true">“</span>
+      <blockquote class="max-w-4xl font-display text-3xl font-extrabold leading-tight text-azul sm:text-5xl">
+        La pregunta más persistente y urgente de la vida es: ¿qué estás haciendo por los demás?
+      </blockquote>
+      <figcaption class="text-lg text-tinta">Martin Luther King Jr., Montgomery, 1957</figcaption>
+    </figure>
+  </section>
+</Layout>

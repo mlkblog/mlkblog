@@ -1,0 +1,31 @@
+---
+/**
+ * Mosaico de píldoras del Hero: reinterpreta los trazos redondeados y rellenos
+ * de las letras M-L-K. Es el único elemento expresivo del sitio.
+ */
+type Pildora = { x: number; y: number; w: number; h: number; patron: string; fondo: 'blanco' | 'azul' | 'sol' | 'rojo' };
+const pildoras: Pildora[] = [
+  { x: 14, y: 170, w: 92, h: 360, patron: 'zigzag', fondo: 'blanco' },
+  { x: 118, y: 80, w: 92, h: 450, patron: 'rombos', fondo: 'azul' },
+  { x: 222, y: 200, w: 92, h: 330, patron: 'greca', fondo: 'sol' },
+  { x: 326, y: 14, w: 92, h: 516, patron: 'lineas', fondo: 'blanco' },
+  { x: 430, y: 130, w: 92, h: 400, patron: 'espiral', fondo: 'rojo' },
+];
+const azul = '#273591';
+const fondos = { blanco: '#ffffff', azul, sol: '#ffcb04', rojo: '#cb1334' };
+// Trazo blanco sobre fondos oscuros (azul, rojo); azul sobre claros
+const sufijo = (f: Pildora['fondo']) => (f === 'azul' || f === 'rojo' ? 'b' : 'a');
+const inset = 15;
+---
+<svg viewBox="0 0 536 544" class="w-full h-auto" role="img" aria-label="Mosaico de formas redondeadas con los patrones geométricos del logo MLK">
+  {pildoras.map((p, i) => (
+    <g class="pildora" style={`--i:${i}`}>
+      <rect x={p.x} y={p.y} width={p.w} height={p.h} rx={p.w / 2} fill={fondos[p.fondo]} />
+      <rect
+        x={p.x + inset} y={p.y + inset} width={p.w - inset * 2} height={p.h - inset * 2}
+        rx={(p.w - inset * 2) / 2} fill={`url(#p-${p.patron}-${sufijo(p.fondo)})`}
+      />
+      <rect x={p.x} y={p.y} width={p.w} height={p.h} rx={p.w / 2} fill="none" stroke={azul} stroke-width="9" />
+    </g>
+  ))}
+</svg>

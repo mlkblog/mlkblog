@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import TarjetaActividad from '../../components/TarjetaActividad.astro';
+import { CATEGORIAS } from '../../content.config';
+
+const actividades = (await getCollection('actividades')).sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
+const conteo = (c: string) => actividades.filter((a) => a.data.categoria === c).length;
+---
+<Layout titulo="Actividades" descripcion="Crónicas de las obras sociales de los Becarios MLK: educación, medio ambiente y comunidad.">
+  <section class="contenedor flex flex-col gap-10 pb-24 pt-12 md:pt-20">
+    <div class="flex flex-col gap-5">
+      <h1 class="text-5xl font-extrabold sm:text-6xl">Obras sociales</h1>
+      <p class="prosa text-xl text-gris">Cada crónica cuenta una actividad: dónde fue, con quién la hicimos y a cuántas personas llegó.</p>
+    </div>
+
+    <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoría" data-filtros>
+      <button type="button" data-filtro="todas" aria-pressed="true" class="filtro">Todas <span class="tabular-nums">({actividades.length})</span></button>
+      {CATEGORIAS.map((c) => (
+        <button type="button" data-filtro={c} aria-pressed="false" class="filtro">{c} <span class="tabular-nums">({conteo(c)})</span></button>
+      ))}
+    </div>
+
+    <div class="grid gap-x-8 gap-y-14 md:grid-cols-2 lg:grid-cols-3" data-rejilla>
+      {actividades.map((a, i) => <TarjetaActividad actividad={a} nivel={2} prioridad={i === 0} />)}
+    </div>
+    <p class="hidden rounded-foto bg-papel p-8 text-lg" data-vacio>
+      Aún no hay crónicas en esta categoría. ¿Hicieron una actividad así? Publíquenla creando una carpeta nueva en <code>src/content/actividades/</code>.
+    </p>
+  </section>
+</Layout>
+
+<style>
+  .filtro {
+    @reference "../../styles/global.css";
+    @apply cursor-pointer rounded-full border-2 border-linea bg-white px-5 py-2 font-display font-bold text-tinta transition-colors hover:border-azul;
+  }
+  .filtro[aria-pressed='true'] {
+    @reference "../../styles/global.css";
+    @apply border-azul bg-azul text-white;
+  }
+  [data-rejilla] > a { view-transition-name: var(--vt); }
+</style>
+
+<script>
+  function iniciarFiltros() {
+    const grupo = document.querySelector<HTMLElement>('[data-filtros]');
+    if (!grupo) return;
+    const tarjetas = [...document.querySelectorAll<HTMLElement>('[data-rejilla] > a')];
+    const vacio = document.querySelector<HTMLElement>('[data-vacio]')!;
+
+    const aplicar = (filtro: string) => {
+      let visibles = 0;
+      tarjetas.forEach((t) => {
+        const mostrar = filtro === 'todas' || t.dataset.categoria === filtro;
+        t.hidden = !mostrar;
+        if (mostrar) visibles++;
+      });
+      vacio.classList.toggle('hidden', visibles > 0);
+      grupo.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filtro === filtro)));
+      const url = new URL(location.href);
+      if (filtro === 'todas') url.searchParams.delete('categoria');
+      else url.searchParams.set('categoria', filtro);
+      history.replaceState(history.state, '', url);
+    };
+
+    grupo.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest('button');
+      if (!b) return;
+      const filtro = b.dataset.filtro!;
+      // El reacomodo de la rejilla se anima con la View Transitions API cuando está disponible
+      const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (document.startViewTransition && !reducir) {
+        tarjetas.forEach((t, i) => t.style.setProperty('--vt', `tarjeta-${i}`));
+        document.startViewTransition(() => aplicar(filtro)).finished.finally(() => tarjetas.forEach((t) => t.style.removeProperty('--vt')));
+      } else aplicar(filtro);
+    });
+
+    // Solo se aplica si la categoría de la URL existe (evita una rejilla vacía por un enlace mal escrito)
+    const inicial = new URL(location.href).searchParams.get('categoria');
+    const validos = [...grupo.querySelectorAll<HTMLButtonElement>('button')].map((b) => b.dataset.filtro);
+    if (inicial && validos.includes(inicial)) aplicar(inicial);
+  }
+  document.addEventListener('astro:page-load', iniciarFiltros);
+</script>

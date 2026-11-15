@@ -1,0 +1,42 @@
+---
+interface Props { valor: number; etiqueta: string }
+const { valor, etiqueta } = Astro.props;
+const formato = new Intl.NumberFormat('es-CO');
+---
+<div class="flex flex-col gap-1">
+  <span
+    class="font-display text-6xl sm:text-7xl font-extrabold tabular-nums leading-none text-white"
+    data-contador data-valor={valor}
+  >{formato.format(valor)}</span>
+  <span class="text-lg text-cielo">{etiqueta}</span>
+</div>
+
+<script>
+  // Cuenta desde 0 cuando el número entra en pantalla. Sin movimiento si el usuario lo pide.
+  function iniciarContadores() {
+    const els = document.querySelectorAll<HTMLElement>('[data-contador]');
+    const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fmt = new Intl.NumberFormat('es-CO');
+    if (reducir || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entradas) => {
+      for (const e of entradas) {
+        if (!e.isIntersecting) continue;
+        io.unobserve(e.target);
+        const el = e.target as HTMLElement;
+        const fin = Number(el.dataset.valor);
+        const dur = 1400;
+        const t0 = performance.now();
+        const paso = (t: number) => {
+          const p = Math.min(1, (t - t0) / dur);
+          const suave = 1 - Math.pow(1 - p, 3);
+          el.textContent = fmt.format(Math.round(fin * suave));
+          if (p < 1) requestAnimationFrame(paso);
+        };
+        el.textContent = '0';
+        requestAnimationFrame(paso);
+      }
+    }, { threshold: 0.6 });
+    els.forEach((el) => io.observe(el));
+  }
+  document.addEventListener('astro:page-load', iniciarContadores);
+</script>

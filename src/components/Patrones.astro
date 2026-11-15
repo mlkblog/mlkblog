@@ -1,0 +1,35 @@
+---
+/**
+ * Rellenos geométricos tomados de las letras del logo MLK.
+ * Sufijo -a = trazo azul (sobre blanco/amarillo) · -b = trazo blanco (sobre azul).
+ * Se incluye una sola vez en el layout; cualquier SVG puede usar fill="url(#p-zigzag-a)".
+ */
+const azul = '#273591';
+const variantes = [
+  { s: 'a', c: azul },
+  { s: 'b', c: '#ffffff' },
+];
+---
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <defs>
+    {variantes.map(({ s, c }) => (
+      <>
+        <pattern id={`p-zigzag-${s}`} width="44" height="26" patternUnits="userSpaceOnUse">
+          <path d="M0 19l11-11 11 11 11-11 11 11" fill="none" stroke={c} stroke-width="5" stroke-linejoin="round" />
+        </pattern>
+        <pattern id={`p-rombos-${s}`} width="48" height="48" patternUnits="userSpaceOnUse">
+          <path d="M24 4l20 20-20 20L4 24zM24 15l9 9-9 9-9-9z" fill="none" stroke={c} stroke-width="4.5" />
+        </pattern>
+        <pattern id={`p-greca-${s}`} width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M5 37V5h30v24H15V15h10v6" fill="none" stroke={c} stroke-width="4.5" />
+        </pattern>
+        <pattern id={`p-espiral-${s}`} width="48" height="48" patternUnits="userSpaceOnUse">
+          <path d="M5 43V5h38v32H13V13h22v16H21v-8h8" fill="none" stroke={c} stroke-width="4" />
+        </pattern>
+        <pattern id={`p-lineas-${s}`} width="30" height="36" patternUnits="userSpaceOnUse">
+          <path d="M8 0v36M22 0v14h-6M22 22v14" fill="none" stroke={c} stroke-width="5" />
+        </pattern>
+      </>
+    ))}
+  </defs>
+</svg>

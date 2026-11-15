@@ -1,0 +1,142 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import { fechaLarga, numero } from '../../lib/formato';
+import { claseCategoria } from '../../lib/categorias';
+
+export async function getStaticPaths() {
+  const actividades = await getCollection('actividades');
+  return actividades.map((actividad) => ({ params: { id: actividad.id }, props: { actividad } }));
+}
+
+const { actividad } = Astro.props;
+const d = actividad.data;
+const { Content } = await render(actividad);
+---
+<Layout titulo={d.titulo} descripcion={d.resumen}>
+  <article class="pb-24">
+    <header class="contenedor flex flex-col gap-6 pt-10 md:pt-14">
+      <a href="/actividades/" class="font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8 self-start">Todas las obras sociales</a>
+      <p class="flex flex-wrap items-center gap-x-3 gap-y-2 text-gris">
+        <a href={`/actividades/?categoria=${encodeURIComponent(d.categoria)}`} class:list={['rounded-full px-3 py-0.5 font-semibold', claseCategoria(d.categoria)]}>{d.categoria}</a>
+        <time datetime={d.fecha.toISOString()}>{fechaLarga(d.fecha)}</time>
+        {d.ejemplo && <span class="rounded-full border border-linea px-3 py-0.5">Crónica de ejemplo</span>}
+      </p>
+      <h1 class="max-w-4xl text-4xl font-extrabold sm:text-6xl">{d.titulo}</h1>
+      <p class="prosa text-xl text-gris">{d.resumen}</p>
+    </header>
+
+    <div class="contenedor mt-10">
+      <div class="foto-vt overflow-hidden rounded-foto bg-azul" transition:name={`foto-${actividad.id}`}>
+        <Image
+          src={d.imagen}
+          alt={d.imagenAlt}
+          widths={[800, 1200, 1600]}
+          sizes="(min-width: 1152px) 1152px, 100vw"
+          class="aspect-[16/9] w-full object-cover"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+    </div>
+
+    <div class="contenedor mt-12 grid gap-12 lg:grid-cols-[1fr_18rem]">
+      <div class="prosa">
+        <Content />
+      </div>
+
+      <aside class="order-first flex flex-col gap-6 self-start lg:order-none lg:sticky lg:top-28" aria-label="Datos de la actividad">
+        <dl class="grid grid-cols-2 gap-5 rounded-foto bg-papel p-6 lg:grid-cols-1 [&>div:nth-child(n+3)]:col-span-2 lg:[&>div:nth-child(n+3)]:col-span-1">
+          <div>
+            <dt class="text-sm text-gris">Personas acompañadas</dt>
+            <dd class="font-display text-5xl font-extrabold tabular-nums text-azul">{numero(d.beneficiarios)}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-gris">Horas de voluntariado</dt>
+            <dd class="font-display text-5xl font-extrabold tabular-nums text-azul">{numero(d.horasVoluntariado)}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-gris">Lugar</dt>
+            <dd class="font-semibold">{d.ubicacion}</dd>
+          </div>
+          {d.aliados.length > 0 && (
+            <div>
+              <dt class="text-sm text-gris">Aliados</dt>
+              {d.aliados.map((al) => <dd class="font-semibold">{al}</dd>)}
+            </div>
+          )}
+          {d.autor && (
+            <div>
+              <dt class="text-sm text-gris">Escrita por</dt>
+              <dd>{d.autor}</dd>
+            </div>
+          )}
+        </dl>
+        <a href="#contacto" class="btn btn-azul justify-center">Apoyar la próxima jornada</a>
+      </aside>
+    </div>
+
+    {d.galeria.length > 0 && (
+      <section class="contenedor mt-20 flex flex-col gap-6" aria-labelledby="titulo-galeria">
+        <h2 id="titulo-galeria" class="text-3xl font-extrabold sm:text-4xl">Galería</h2>
+        <ul class="grid grid-cols-2 gap-4 md:grid-cols-3">
+          {d.galeria.map((foto, i) => (
+            <li>
+              <button type="button" class="group block w-full cursor-zoom-in overflow-hidden rounded-foto" data-abrir={i} aria-label={`Ampliar foto: ${foto.alt}`}>
+                <Image src={foto.src} alt={foto.alt} widths={[400, 800]} sizes="(min-width: 768px) 33vw, 50vw" class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <dialog class="visor m-auto max-h-[92vh] w-[min(92vw,1200px)] bg-transparent p-0 backdrop:bg-noche/90" data-visor>
+      <form method="dialog" class="flex flex-col gap-3">
+        {d.galeria.map((foto, i) => (
+          <figure class="hidden flex-col gap-3" data-foto={i}>
+            <Image src={foto.src} alt={foto.alt} widths={[1200, 1600]} sizes="92vw" class="max-h-[78vh] w-full rounded-foto object-contain" />
+            <figcaption class="text-white">{foto.alt}</figcaption>
+          </figure>
+        ))}
+        <div class="flex flex-wrap gap-3">
+          <button type="button" class="btn btn-borde border-white text-white hover:bg-white hover:text-azul" data-mover="-1">Anterior</button>
+          <button type="button" class="btn btn-borde border-white text-white hover:bg-white hover:text-azul" data-mover="1">Siguiente</button>
+          <button class="btn btn-sol ml-auto">Cerrar</button>
+        </div>
+      </form>
+    </dialog>
+  </article>
+</Layout>
+
+<style>
+  .visor[open] { animation: aparecer 0.25s ease-out; }
+  @keyframes aparecer { from { opacity: 0; transform: scale(0.97); } }
+  @media (prefers-reduced-motion: reduce) { .visor[open] { animation: none; } }
+</style>
+
+<script>
+  function iniciarGaleria() {
+    const visor = document.querySelector<HTMLDialogElement>('[data-visor]');
+    if (!visor) return;
+    const fotos = [...visor.querySelectorAll<HTMLElement>('[data-foto]')];
+    let actual = 0;
+    const mostrar = (i: number) => {
+      actual = (i + fotos.length) % fotos.length;
+      fotos.forEach((f, j) => { f.classList.toggle('hidden', j !== actual); f.classList.toggle('flex', j === actual); });
+    };
+    document.querySelectorAll<HTMLButtonElement>('[data-abrir]').forEach((b) =>
+      b.addEventListener('click', () => { mostrar(Number(b.dataset.abrir)); visor.showModal(); })
+    );
+    visor.querySelectorAll<HTMLButtonElement>('[data-mover]').forEach((b) =>
+      b.addEventListener('click', () => mostrar(actual + Number(b.dataset.mover)))
+    );
+    visor.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') mostrar(actual + 1);
+      if (e.key === 'ArrowLeft') mostrar(actual - 1);
+    });
+    visor.addEventListener('click', (e) => { if (e.target === visor) visor.close(); });
+  }
+  document.addEventListener('astro:page-load', iniciarGaleria);
+</script>

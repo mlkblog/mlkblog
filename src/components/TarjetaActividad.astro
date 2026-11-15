@@ -1,0 +1,48 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { fechaLarga } from '../lib/formato';
+import { claseCategoria } from '../lib/categorias';
+
+interface Props {
+  actividad: CollectionEntry<'actividades'>;
+  destacada?: boolean;
+  /** Nivel del título según la jerarquía de la página (h2 si no hay h2 de sección encima) */
+  nivel?: 2 | 3;
+  /** true para la primera imagen visible (LCP): carga inmediata y prioridad alta */
+  prioridad?: boolean;
+}
+const { actividad, destacada = false, nivel = 3, prioridad = false } = Astro.props;
+const d = actividad.data;
+const Titulo = `h${nivel}` as 'h2' | 'h3';
+---
+<a
+  href={`/actividades/${actividad.id}/`}
+  class:list={['group flex flex-col gap-4 rounded-foto', destacada && 'md:col-span-2']}
+  data-categoria={d.categoria}
+>
+  {/* La transición va en el contenedor (que recorta las esquinas), no en la imagen:
+      así la foto viaja ya redondeada entre páginas */}
+  <div class="foto-vt overflow-hidden rounded-foto bg-azul" transition:name={`foto-${actividad.id}`}>
+    <Image
+      src={d.imagen}
+      alt={d.imagenAlt}
+      widths={[480, 800, 1200]}
+      sizes={destacada ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 100vw'}
+      class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+      loading={prioridad ? 'eager' : 'lazy'}
+      fetchpriority={prioridad ? 'high' : 'auto'}
+    />
+  </div>
+  <div class="flex flex-col gap-2">
+    <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gris">
+      <span class:list={['rounded-full px-3 py-0.5 font-semibold', claseCategoria(d.categoria)]}>{d.categoria}</span>
+      <time datetime={d.fecha.toISOString()}>{fechaLarga(d.fecha)}</time>
+      {d.ejemplo && <span class="rounded-full border border-linea px-3 py-0.5">Crónica de ejemplo</span>}
+    </p>
+    <Titulo class:list={['font-extrabold group-hover:underline decoration-sol decoration-4 underline-offset-4', destacada ? 'text-3xl sm:text-4xl' : 'text-2xl']}>
+      {d.titulo}
+    </Titulo>
+    <p class="max-w-prose text-gris">{d.resumen}</p>
+  </div>
+</a>

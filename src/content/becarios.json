@@ -1,0 +1,6 @@
+[
+  { "id": "becario-1", "nombre": "[Nombre Apellido]", "carrera": "Licenciatura en Inglés", "frase": "Cada jornada me recuerda por qué estudio.", "cohorte": "2026" },
+  { "id": "becario-2", "nombre": "[Nombre Apellido]", "carrera": "Ingeniería Ambiental", "frase": "Servir es la forma más clara de liderar.", "cohorte": "2026" },
+  { "id": "becario-3", "nombre": "[Nombre Apellido]", "carrera": "Psicología", "frase": "Escuchar también transforma.", "cohorte": "2026" },
+  { "id": "becario-4", "nombre": "[Nombre Apellido]", "carrera": "Comunicación Social", "frase": "Contar lo que hacemos inspira a otros a sumarse.", "cohorte": "2026" }
+]

@@ -1,0 +1,90 @@
+# Blog Becarios MLK — Centro Colombo Americano
+
+Blog oficial de los Becarios del Programa de Becas Martin Luther King Jr. Objetivos: mostrar quiénes somos, documentar las obras sociales y transmitir su impacto real.
+
+## Stack
+
+- **Astro 7** con `<ClientRouter />` (View Transitions) en `src/layouts/Layout.astro`.
+- **Tailwind CSS v4** vía `@tailwindcss/vite`. Los tokens viven en `@theme` dentro de `src/styles/global.css`: no uses colores sueltos, usa los tokens.
+- Animaciones con **CSS nativo** y JS mínimo (sin Framer Motion, para no cargar React). Toda animación respeta `prefers-reduced-motion`.
+- Contenido con **Content Collections** (`src/content.config.ts`).
+
+Comandos: `npm run dev` (http://localhost:4321), `npm run build`, `npm run preview`, **`npm run verificar`** (tipos + build + revisión de enlaces, `alt`, IDs, un `h1` por página, metadatos y peso del HTML ≤ 60 KB). Correr `verificar` antes de cada publicación.
+
+### Rendimiento (no romper)
+
+Auditoría Lighthouse del 15 nov 2026: 99–100 en rendimiento, 100 en accesibilidad, buenas prácticas y SEO, en móvil y escritorio. LCP ≈ 1,6–1,9 s en móvil y 0,4 s en escritorio. CLS ≤ 0,04. HTML ~23 KB por página.
+
+- Fuentes con la API `fonts` de Astro (`astro.config.mjs` + `<Font>` en el layout): se sirven desde el sitio con preload. No vuelvas a enlazar Google Fonts.
+- CSS incrustado (`build.inlineStylesheets: 'always'`), sin peticiones que bloqueen el render.
+- Logo como archivo estático en `public/` (`<img>`), nunca incrustado como SVG en el HTML (pesa 27 KB).
+- La primera imagen visible de una lista lleva `prioridad` en `TarjetaActividad` (carga inmediata). El resto, en diferido.
+- `prefetch` precarga las páginas al pasar el cursor por un enlace.
+- La animación del mosaico usa solo `transform`: el contenido es visible aunque el navegador pause la animación.
+- Fotos reales: súbelas en JPG/PNG de máx. ~2500 px de ancho; Astro genera WebP en varios tamaños.
+
+## Cómo publicar una obra social (para becarios)
+
+1. Crea una carpeta en `src/content/actividades/` con el nombre de la URL, p. ej. `2026-03-jornada-salud/`.
+2. Dentro, crea `index.md` y copia las fotos (`.jpg`, `.png`, `.webp`).
+3. Llena el encabezado (frontmatter) siguiendo una crónica existente. Campos obligatorios: `titulo`, `fecha`, `ubicacion`, `resumen` (máx. 220 caracteres), `categoria`, `imagen`, `imagenAlt`, `beneficiarios`, `horasVoluntariado`. Opcionales: `aliados`, `autor`, `galeria` (lista de `{ src, alt }`), `ejemplo`.
+4. Categorías permitidas: `Educación`, `Medio Ambiente`, `Comunidad`. Para agregar una, edítala en `src/content.config.ts` (constante `CATEGORIAS`).
+5. Si un campo falta o tiene un tipo incorrecto, `npm run dev` muestra el error exacto.
+
+Los contadores de la portada (obras, personas, horas) se calculan solos sumando `beneficiarios` y `horasVoluntariado` de todas las crónicas. El equipo se edita en `src/content/becarios.json`.
+
+Las dos crónicas iniciales y los perfiles del equipo son **contenido de ejemplo** (`ejemplo: true` muestra una etiqueta). Reemplázalos por información real antes de lanzar.
+
+## Identidad visual
+
+### Paleta (manual de marca + logo)
+
+El logo es monocromo: azul marino sobre blanco. El escaneo muestrea `#2F3879`, que es el Pantone Dark Blue 072C impreso; en pantalla usamos su valor oficial.
+
+| Token Tailwind | HEX | Origen | Uso |
+| --- | --- | --- | --- |
+| `azul` | `#273591` | Dark Blue 072C | Color de firma: títulos, enlaces, bandas, botones |
+| `noche` | `#1B2462` | Azul del logo oscurecido | Pie de página, hover, banda de cifras |
+| `sol` | `#FFCB04` | Yellow 116C | Acento cálido único: subrayado activo, foco, CTA. Nunca texto sobre blanco |
+| `rojo` | `#CB1334` | Dark Red 199C | Acento sutil secundario: una píldora del mosaico, comillas de citas, borde de testimonios, categoría Comunidad |
+| `rosa` | `#FBE5E9` | Tinte de 199C | Fondo de la etiqueta Comunidad (texto `rojo`, 4,7:1) |
+| `cielo` | `#ADDFE9` | Light Blue 635C | Fondos suaves (citas, etiqueta Educación) |
+| `agua` | `#DCEDF3` | Tinte de Light Blue 7695C | Fondo de la etiqueta Medio Ambiente (texto `noche`) |
+| `papel` | `#F7F7F3` | 11-0601 TCX | Fondo de secciones alternas |
+| `tinta` | `#12162E` | — | Texto principal |
+| `gris` | `#4B5170` | — | Texto secundario (7:1 sobre blanco) |
+| `linea` | `#D6D7D6` | Light Gray 2C | Bordes y divisores |
+
+Contraste verificado (WCAG 2.1): `azul` sobre blanco 10,4:1 · `sol` sobre `azul` 6,8:1 · `rojo` sobre blanco 5,7:1 · `rojo` sobre `rosa` 4,7:1 · `tinta` sobre blanco > 17:1.
+
+Regla de proporción: blanco y azul dominan (~85%), amarillo y rojo son acentos (~5% cada uno). El amarillo marca acción y estado activo (subrayados, foco, píldora central); el rojo marca la voz de las personas (citas, testimonios) y la comunidad. Nunca rojo en botones ni en textos largos, y nunca rojo y amarillo juntos en el mismo elemento.
+
+Colores por categoría: `src/lib/categorias.ts`.
+
+### Logo
+
+- `src/assets/logo-mlk.svg`: vector trazado del escaneo con `node scripts/vectorizar-logo.mjs` (usa `currentColor`; colorearlo con `text-azul` o `text-white`). Se importa como componente: `import Logo from '../assets/logo-mlk.svg'`.
+- `public/favicon.svg`: misma silueta en azul 072C fijo.
+- `src/assets/logo-mlk.jpg`: escaneo original, solo como fuente. Si el Centro entrega el logo en vector oficial (AI/SVG/PDF), reemplaza el SVG por ese.
+
+### Tipografía
+
+- **Display:** Bricolage Grotesque (700–800), interlineado 1.0–1.1, tracking ligeramente negativo. Solo títulos y cifras.
+- **Texto:** Source Sans 3 (400/600), 18 px base, interlineado 1.6, líneas de máx. ~68 caracteres (`max-w-prose`).
+- Etiquetas en minúscula/oración, nunca en mayúsculas sostenidas. Sin flechas `→` en botones.
+
+### Motivos gráficos
+
+Los rellenos de las letras del logo (zigzag, rombos concéntricos, greca, espiral cuadrada, líneas con muescas) están en `src/components/Patrones.astro` como `<pattern>` SVG. La forma base es la **píldora redondeada** (como los trazos de las letras M-L-K).
+
+- El mosaico de píldoras del Hero es el único elemento expresivo del sitio y la única animación automática (entrada escalonada al cargar).
+- El resto es sobrio: sin sombras, radio 1.25rem en imágenes, bordes de 1px `linea`.
+- La franja de greca amarilla separa encabezado y pie.
+
+### Reglas de diseño
+
+- Alineación a la izquierda. Columna máxima 72rem con margen lateral mínimo de 1rem.
+- Movimiento solo en respuesta a acciones (filtros, galería, navegación) más el Hero y los contadores.
+- Las imágenes de una crónica comparten `transition:name` entre tarjeta y página para el efecto de transición.
+- Probar siempre en 1440 px y 390 px de ancho.
+- Fotos: pedir autorización para publicar rostros, nunca menores sin consentimiento del acudiente.

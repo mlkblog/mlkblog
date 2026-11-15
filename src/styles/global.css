@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme {
+  --color-azul: #273591;
+  --color-noche: #1b2462;
+  --color-sol: #ffcb04;
+  --color-rojo: #cb1334;   /* Dark Red 199C — acento sutil */
+  --color-rosa: #fbe5e9;   /* tinte claro del rojo para fondos de etiqueta */
+  --color-agua: #dcedf3;   /* tinte de Light Blue 7695C */
+  --color-cielo: #addfe9;
+  --color-papel: #f7f7f3;
+  --color-tinta: #12162e;
+  --color-gris: #4b5170;
+  --color-linea: #d6d7d6;
+
+  /* Variables generadas por la API de fuentes de Astro (astro.config.mjs) */
+  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-source);
+
+  --radius-foto: 1.25rem;
+}
+
+@layer base {
+  html { font-size: 112.5%; scroll-behavior: smooth; }
+  body { @apply bg-white text-tinta font-sans antialiased; line-height: 1.6; }
+  h1, h2, h3 { @apply font-display text-azul; text-wrap: balance; letter-spacing: -0.02em; }
+  h1 { line-height: 1.02; }
+  h2, h3 { line-height: 1.1; }
+  ::selection { background: var(--color-cielo); color: var(--color-tinta); }
+  :focus-visible { outline: 3px solid var(--color-sol); outline-offset: 3px; border-radius: 4px; }
+}
+
+@layer components {
+  .contenedor { @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8; }
+  .greca {
+    height: 12px; background: var(--color-sol);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M1 11V1h10v8H5V5h3' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='M13 11V1h10v8h-6V5h3' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E") repeat-x;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-full px-6 py-3 font-display font-bold transition-colors duration-200;
+  }
+  /* usar junto a .btn: class="btn btn-sol" */
+  .btn-sol { @apply bg-sol text-tinta hover:bg-white; }
+  .btn-azul { @apply bg-azul text-white hover:bg-noche; }
+  .btn-borde { @apply border-2 border-azul text-azul hover:bg-azul hover:text-white; }
+  .prosa { @apply max-w-prose text-lg; }
+  .prosa > * + * { margin-top: 1.1em; }
+  .prosa h2 { @apply text-2xl sm:text-3xl font-extrabold; margin-top: 1.8em; }
+  .prosa h3 { @apply text-xl font-bold; margin-top: 1.5em; }
+  .prosa blockquote { @apply border-l-4 border-rojo pl-5 font-display text-xl text-azul; line-height: 1.35; }
+  .prosa ul { @apply list-disc pl-6; }
+  .prosa ol { @apply list-decimal pl-6; }
+  .prosa a { @apply text-azul underline decoration-sol decoration-2 underline-offset-4; }
+  .prosa strong { @apply font-semibold text-tinta; }
+}
+
+/* Entrada escalonada del mosaico del Hero: el único movimiento automático del sitio */
+/* Solo desplazamiento, sin opacidad: si el navegador pausa la animación, el mosaico sigue visible */
+@keyframes subir {
+  from { transform: translateY(48px); }
+  to { transform: none; }
+}
+.pildora { animation: subir 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: calc(var(--i) * 90ms + 150ms); transform-box: fill-box; }
+
+/* Transición de fotos entre tarjeta (16:10) y crónica (16:9): la imagen se recorta en vez de
+   estirarse, y el grupo conserva las esquinas redondeadas durante todo el viaje */
+.foto-vt { view-transition-class: foto; }
+::view-transition-group(*.foto) { border-radius: var(--radius-foto); overflow: clip; }
+::view-transition-old(*.foto),
+::view-transition-new(*.foto) { width: 100%; height: 100%; object-fit: cover; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .pildora { animation: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
