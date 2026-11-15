@@ -1,4 +1,5 @@
 ---
+import { ruta } from '../lib/rutas';
 import Layout from '../layouts/Layout.astro';
 ---
 <Layout titulo="Página no encontrada" descripcion="La página que buscas no existe o cambió de dirección.">
@@ -7,8 +8,8 @@ import Layout from '../layouts/Layout.astro';
     <h1 class="text-4xl font-extrabold sm:text-5xl">No encontramos esta página</h1>
     <p class="prosa text-xl text-gris">Puede que la dirección esté mal escrita o que la crónica haya cambiado de nombre. Desde aquí puedes volver al inicio o ver todas las obras sociales.</p>
     <div class="flex flex-wrap gap-3">
-      <a href="/" class="btn btn-azul">Ir al inicio</a>
-      <a href="/actividades/" class="btn btn-borde">Ver las obras sociales</a>
+      <a href={ruta("/")} class="btn btn-azul">Ir al inicio</a>
+      <a href={ruta("/actividades/")} class="btn btn-borde">Ver las obras sociales</a>
     </div>
   </section>
 </Layout>

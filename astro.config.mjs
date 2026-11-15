@@ -6,8 +6,10 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // Dominio definitivo: URLs absolutas para redes sociales, buscadores y el sitemap
-  site: 'https://mlkblog.com',
+  // Hoy: GitHub Pages en https://mlkblog.github.io/mlkblog/
+  // Al conectar el dominio propio: site: 'https://mlkblog.com', base: '/' y recrear public/CNAME con "mlkblog.com"
+  site: 'https://mlkblog.github.io',
+  base: '/mlkblog',
 
   // Precarga las páginas al pasar el cursor o tocar un enlace: navegación casi instantánea
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },

@@ -1,4 +1,5 @@
 ---
+import { ruta } from '../../lib/rutas';
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
@@ -17,9 +18,9 @@ const { Content } = await render(actividad);
 <Layout titulo={d.titulo} descripcion={d.resumen}>
   <article class="pb-24">
     <header class="contenedor flex flex-col gap-6 pt-10 md:pt-14">
-      <a href="/actividades/" class="font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8 self-start">Todas las obras sociales</a>
+      <a href={ruta("/actividades/")} class="font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8 self-start">Todas las obras sociales</a>
       <p class="flex flex-wrap items-center gap-x-3 gap-y-2 text-gris">
-        <a href={`/actividades/?categoria=${encodeURIComponent(d.categoria)}`} class:list={['rounded-full px-3 py-0.5 font-semibold', claseCategoria(d.categoria)]}>{d.categoria}</a>
+        <a href={ruta(`/actividades/?categoria=${encodeURIComponent(d.categoria)}`)} class:list={['rounded-full px-3 py-0.5 font-semibold', claseCategoria(d.categoria)]}>{d.categoria}</a>
         <time datetime={d.fecha.toISOString()}>{fechaLarga(d.fecha)}</time>
         {d.ejemplo && <span class="rounded-full border border-linea px-3 py-0.5">Crónica de ejemplo</span>}
       </p>

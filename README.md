@@ -1,6 +1,6 @@
 # Blog Becarios MLK
 
-Blog oficial de los Becarios del Programa de Becas Martin Luther King Jr. del Centro Colombo Americano. Sitio en línea: **https://mlkblog.com**
+Blog oficial de los Becarios del Programa de Becas Martin Luther King Jr. del Centro Colombo Americano. Sitio en línea: **https://mlkblog.github.io/mlkblog/** (próximamente mlkblog.com)
 
 Hecho con [Astro](https://astro.build) y Tailwind CSS. Cada cambio en la rama `main` se publica solo en GitHub Pages en unos 2 minutos.
 

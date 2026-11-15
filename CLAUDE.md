@@ -11,6 +11,12 @@ Blog oficial de los Becarios del Programa de Becas Martin Luther King Jr. Objeti
 
 Comandos: `npm run dev` (http://localhost:4321), `npm run build`, `npm run preview`, **`npm run verificar`** (tipos + build + revisión de enlaces, `alt`, IDs, un `h1` por página, metadatos y peso del HTML ≤ 60 KB). Correr `verificar` antes de cada publicación.
 
+### Publicación y rutas
+
+- Publicado en GitHub Pages: **https://mlkblog.github.io/mlkblog/** (repo `mlkblog/mlkblog`). `.github/workflows/deploy.yml` corre `npm run verificar` y publica en cada push a `main`.
+- El sitio vive en la subcarpeta `/mlkblog` (`base` en `astro.config.mjs`). **Todo enlace interno o archivo de `public/` va con `ruta()`** de `src/lib/rutas.ts`: `href={ruta('/actividades/')}`. Un `href="/algo"` escrito a mano funciona en local pero se rompe en línea; `npm run verificar` lo detecta como enlace roto.
+- Para pasar a **mlkblog.com**: en `astro.config.mjs` poner `site: 'https://mlkblog.com'` y `base: '/'`, crear `public/CNAME` con `mlkblog.com`, configurar el dominio en Settings → Pages y los DNS en el registrador (A: 185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153; CNAME `www` → `mlkblog.github.io`).
+
 ### Rendimiento (no romper)
 
 Auditoría Lighthouse del 15 nov 2026: 99–100 en rendimiento, 100 en accesibilidad, buenas prácticas y SEO, en móvil y escritorio. LCP ≈ 1,6–1,9 s en móvil y 0,4 s en escritorio. CLS ≤ 0,04. HTML ~23 KB por página.

@@ -1,4 +1,5 @@
 ---
+import { ruta } from '../lib/rutas';
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Mosaico from '../components/Mosaico.astro';
@@ -21,8 +22,8 @@ const hayEjemplos = actividades.some((a) => a.data.ejemplo);
         Somos jóvenes becarios del Centro Colombo Americano. Inspirados en el legado de Martin Luther King Jr., organizamos obras sociales con comunidades y aquí contamos qué hicimos, con quién y qué cambió.
       </p>
       <div class="flex flex-wrap gap-3">
-        <a href="/actividades/" class="btn btn-azul">Ver las obras sociales</a>
-        <a href="/nosotros/" class="btn btn-borde">Conocer al equipo</a>
+        <a href={ruta("/actividades/")} class="btn btn-azul">Ver las obras sociales</a>
+        <a href={ruta("/nosotros/")} class="btn btn-borde">Conocer al equipo</a>
       </div>
     </div>
     <div class="mx-auto w-full max-w-[17rem] sm:max-w-sm md:max-w-none">
@@ -49,7 +50,7 @@ const hayEjemplos = actividades.some((a) => a.data.ejemplo);
   <section class="contenedor flex flex-col gap-10 py-20">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <h2 class="text-4xl font-extrabold sm:text-5xl">Obras sociales recientes</h2>
-      <a href="/actividades/" class="font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8">Ver todas</a>
+      <a href={ruta("/actividades/")} class="font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8">Ver todas</a>
     </div>
     <div class="grid gap-x-8 gap-y-14 md:grid-cols-3">
       {recientes.map((a, i) => <TarjetaActividad actividad={a} destacada={i === 0} />)}

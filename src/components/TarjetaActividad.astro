@@ -1,4 +1,5 @@
 ---
+import { ruta } from '../lib/rutas';
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { fechaLarga } from '../lib/formato';
@@ -17,7 +18,7 @@ const d = actividad.data;
 const Titulo = `h${nivel}` as 'h2' | 'h3';
 ---
 <a
-  href={`/actividades/${actividad.id}/`}
+  href={ruta(`/actividades/${actividad.id}/`)}
   class:list={['group flex flex-col gap-4 rounded-foto', destacada && 'md:col-span-2']}
   data-categoria={d.categoria}
 >

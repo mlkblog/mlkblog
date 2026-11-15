@@ -5,6 +5,8 @@ import { join } from 'node:path';
 
 const DIST = 'dist';
 const MAX_HTML_KB = 60;
+// Carpeta base del sitio (p. ej. "/mlkblog" en GitHub Pages); los enlaces la incluyen, dist/ no
+const BASE = (readFileSync('astro.config.mjs', 'utf8').match(/^\s*base:\s*['"]([^'"]*)['"]/m)?.[1] ?? '').replace(/\/+$/, '');
 const paginas = [];
 (function recorrer(dir) {
   for (const f of readdirSync(dir)) {
@@ -15,7 +17,11 @@ const paginas = [];
 })(DIST);
 
 const existe = (url) => {
-  const limpia = decodeURI(url.split('#')[0].split('?')[0]);
+  let limpia = decodeURI(url.split('#')[0].split('?')[0]);
+  if (BASE) {
+    if (limpia !== BASE && !limpia.startsWith(`${BASE}/`)) return false; // enlace interno sin la carpeta base
+    limpia = limpia.slice(BASE.length) || '/';
+  }
   if (!limpia) return true;
   const p = join(DIST, limpia);
   return existsSync(p) && (statSync(p).isFile() || existsSync(join(p, 'index.html')));
