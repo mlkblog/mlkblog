@@ -47,6 +47,8 @@ Auditoría Lighthouse del 15 nov 2026: 99–100 en rendimiento, 100 en accesibil
 - Las animaciones de entrada (mosaico, contadores) solo corren en la primera visita; al navegar, la clase `navegado` en `<html>` las desactiva.
 - Secciones bajo el pliegue con `cv-auto` (`content-visibility: auto`).
 - Navegadores sin View Transitions: `fallback="swap"` (cambio instantáneo).
+- Respuesta al toque inmediata: enlaces del menú (`active:bg-cielo/60`) y tarjetas (`active:opacity-75`). Barra de carga amarilla (`#barra-carga`) solo si el cambio tarda > 120 ms.
+- Perfil de un cambio de sección (CPU 6x): recálculo de estilos 50–90 ms, View Transition 60–110 ms, maquetado y pintura 27–58 ms. La página tiene ~160 elementos y 55 reglas CSS: no hay peso que recortar; mantenerla así.
 - Imágenes de contenido en JPG/PNG (Astro genera WebP). No uses SVG con patrones como foto: son caros de dibujar en teléfonos.
 
 ## Cómo publicar una obra social (para becarios)

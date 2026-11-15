@@ -19,7 +19,7 @@ const Titulo = `h${nivel}` as 'h2' | 'h3';
 ---
 <a
   href={ruta(`/actividades/${actividad.id}/`)}
-  class:list={['group flex flex-col gap-4 rounded-foto', destacada && 'md:col-span-2']}
+  class:list={['group flex flex-col gap-4 rounded-foto transition-opacity duration-150 active:opacity-75', destacada && 'md:col-span-2']}
   data-categoria={d.categoria}
 >
   {/* La transición de foto va en el contenedor (que recorta las esquinas) y solo se activa en la

@@ -55,6 +55,9 @@ const activo = (href: string) => (href === inicio ? rutaActual === inicio : ruta
     <Patrones />
     <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-sol focus:px-4 focus:py-2">Saltar al contenido</a>
 
+    <!-- Barra de carga: solo aparece si el cambio de sección tarda más de 120 ms (red lenta) -->
+    <div id="barra-carga" class="barra-carga" aria-hidden="true" transition:persist></div>
+
     <!-- Fijo arriba solo en pantallas anchas y con altura suficiente (en un teléfono horizontal ocuparía demasiado) -->
     <header class="encabezado-vt relative z-40 bg-white sm:sticky sm:top-0 [@media(max-height:500px)]:relative" transition:persist>
       <div class="contenedor flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-3">
@@ -72,7 +75,7 @@ const activo = (href: string) => (href === inicio ? rutaActual === inicio : ruta
               aria-current={activo(e.href) ? 'page' : undefined}
               data-inicio={e.href === inicio ? '' : undefined}
               class:list={[
-                'inline-flex min-h-11 items-center rounded-full px-1.5 text-[0.85rem] font-display font-bold text-tinta min-[380px]:px-2 min-[380px]:text-[0.92rem] sm:px-3 sm:text-base decoration-sol decoration-4 underline-offset-8 hover:text-azul aria-[current=page]:text-azul aria-[current=page]:underline',
+                'inline-flex min-h-11 items-center rounded-full px-1.5 text-[0.85rem] font-display font-bold text-tinta min-[380px]:px-2 min-[380px]:text-[0.92rem] sm:px-3 sm:text-base decoration-sol decoration-4 underline-offset-8 transition-colors duration-150 hover:text-azul active:bg-cielo/60 aria-[current=page]:text-azul aria-[current=page]:underline',
                 // En pantallas de menos de 360 px el logo ya lleva al inicio: así caben los demás enlaces
                 e.href === inicio && 'max-[359px]:hidden',
               ]}
@@ -115,6 +118,18 @@ const activo = (href: string) => (href === inicio ? rutaActual === inicio : ruta
       // Navegación interna: marca la página nueva ANTES de mostrarla, para que las animaciones de
       // entrada (mosaico, contadores) solo corran en la primera visita y no en cada cambio de sección
       document.addEventListener('astro:before-swap', (e) => e.newDocument.documentElement.classList.add('navegado'));
+
+      // Barra de carga diferida: si la página llega rápido (precargada) nunca se ve
+      let temporizador: number | undefined;
+      const barra = () => document.getElementById('barra-carga');
+      document.addEventListener('astro:before-preparation', () => {
+        clearTimeout(temporizador);
+        temporizador = window.setTimeout(() => barra()?.classList.add('activa'), 120);
+      });
+      document.addEventListener('astro:after-swap', () => {
+        clearTimeout(temporizador);
+        barra()?.classList.remove('activa');
+      });
 
       // Transición de foto solo entre la tarjeta tocada y su crónica (y al volver, entre la crónica y su tarjeta).
       // Nombrar todas las fotos haría que el navegador capture y anime imágenes que no viajan a ningún lado.
