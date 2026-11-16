@@ -41,9 +41,11 @@ Auditoría Lighthouse del 15 nov 2026: 99–100 en rendimiento, 100 en accesibil
 
 ### Cambio de sección (no romper)
 
-- Página vieja: desaparece al instante. Página nueva: fundido de 160 ms (`aparecer-pagina` en `global.css`). El grupo `root` va sin animación.
+- **Teléfonos y tabletas (`hover: none` y `pointer: coarse`): sin View Transitions.** Un script en el `<head>` de `Layout.astro` anula `document.startViewTransition` antes de que cargue el router, que entonces cambia la página al instante (`fallback="swap"`). Capturar y fundir la pantalla entera pesaba en la GPU de los teléfonos reales y se sentía como un tirón. Medido con CPU 6x: 65–130 ms del toque a la página nueva, frente a 100–196 ms con transición. No quitar ese script.
+- Se probó la navegación nativa entre documentos con reglas de especulación (prerender) y se descartó: sin prerender (Safari, teléfonos con poca memoria, ahorro de batería) cada cambio tardaba 180–330 ms.
+- Escritorio: la página vieja desaparece al instante y la nueva entra con un fundido de 160 ms (`aparecer-pagina` en `global.css`). El grupo `root` va sin animación.
 - El encabezado (`encabezado-vt`) no se anima: queda fijo entre secciones.
-- Transición de foto **solo** entre la tarjeta tocada y su crónica (y de vuelta). Las fotos llevan `data-foto-id`, no `transition:name`: el nombre se asigna en `Layout.astro` (`astro:before-preparation` / `astro:before-swap`). Nunca pongas `transition:name` fijo a elementos repetidos: el navegador los capturaría todos en cada navegación.
+- Transición de foto (solo escritorio) **solo** entre la tarjeta tocada y su crónica (y de vuelta). Las fotos llevan `data-foto-id`, no `transition:name`: el nombre se asigna en `Layout.astro` (`astro:before-preparation` / `astro:before-swap`). Nunca pongas `transition:name` fijo a elementos repetidos: el navegador los capturaría todos en cada navegación.
 - Las animaciones de entrada (mosaico, contadores) solo corren en la primera visita; al navegar, la clase `navegado` en `<html>` las desactiva.
 - Secciones bajo el pliegue con `cv-auto` (`content-visibility: auto`).
 - Navegadores sin View Transitions: `fallback="swap"` (cambio instantáneo).
@@ -113,6 +115,6 @@ Los rellenos de las letras del logo (zigzag, rombos concéntricos, greca, espira
 
 - Alineación a la izquierda. Columna máxima 72rem con margen lateral mínimo de 1rem.
 - Movimiento solo en respuesta a acciones (filtros, galería, navegación) más el Hero y los contadores.
-- Las imágenes de una crónica comparten `transition:name` entre tarjeta y página para el efecto de transición.
+- La foto de una crónica viaja entre tarjeta y página en escritorio (ver «Cambio de sección»).
 - Probar siempre en 1440 px y 390 px de ancho.
 - Fotos: pedir autorización para publicar rostros, nunca menores sin consentimiento del acudiente.

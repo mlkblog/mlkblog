@@ -49,6 +49,12 @@ const activo = (href: string) => (href === inicio ? rutaActual === inicio : ruta
     <Font cssVariable="--font-bricolage" preload={[{ weight: '800' }]} />
     <Font cssVariable="--font-source" preload={[{ weight: '400', style: 'normal' }]} />
     <title>{tituloCompleto}</title>
+    <script is:inline>
+      // Teléfonos y tabletas: cambio de sección instantáneo, sin View Transitions. La transición obliga
+      // a capturar la pantalla entera como imagen y fundirla, algo pesado para la GPU de un teléfono y que
+      // se nota como un tirón. Debe correr antes que el router de Astro, que detecta el soporte al cargar.
+      if (matchMedia('(hover: none) and (pointer: coarse)').matches) document.startViewTransition = undefined;
+    </script>
     <ClientRouter fallback="swap" />
   </head>
   <body class="flex min-h-screen flex-col">
