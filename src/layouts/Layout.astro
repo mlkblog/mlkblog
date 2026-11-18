@@ -25,6 +25,15 @@ const enlaces = [
 const rutaActual = Astro.url.pathname;
 const inicio = ruta('/');
 const activo = (href: string) => (href === inicio ? rutaActual === inicio : rutaActual.startsWith(href));
+
+// Reglas de especulación (solo se activan en Chrome Android, ver script del <head>)
+const reglasEspeculacion = JSON.stringify({
+  prerender: [
+    { urls: enlaces.map((e) => e.href), eagerness: 'immediate' },
+    { where: { href_matches: `${inicio}actividades/*` }, eagerness: 'eager' },
+  ],
+  prefetch: [{ where: { href_matches: `${inicio}*` }, eagerness: 'eager' }],
+});
 ---
 <!doctype html>
 <html lang="es">
@@ -56,6 +65,30 @@ const activo = (href: string) => (href === inicio ? rutaActual === inicio : ruta
       if (matchMedia('(hover: none) and (pointer: coarse)').matches) document.startViewTransition = undefined;
     </script>
     <ClientRouter fallback="swap" />
+    <script is:inline define:vars={{ reglas: reglasEspeculacion }}>
+      // Chrome en Android (con ≥ 2 GB de RAM): navegación nativa con pre-renderizado. Chrome arma las
+      // páginas del menú en segundo plano y al tocarlas se muestran ya listas, sin esperar la red.
+      // Va después de <ClientRouter>: apagar el router (fallback "none") antes de que cargue su módulo.
+      // En el resto de navegadores sigue el router de Astro con precarga.
+      if (
+        document.startViewTransition === undefined &&
+        'userAgentData' in navigator &&
+        HTMLScriptElement.supports?.('speculationrules') &&
+        (navigator.deviceMemory ?? 4) >= 2
+      ) {
+        document.querySelector('meta[name="astro-view-transitions-fallback"]')?.setAttribute('content', 'none');
+        document.documentElement.dataset.nav = 'nativa';
+        const s = document.createElement('script');
+        s.type = 'speculationrules';
+        s.textContent = reglas;
+        document.head.append(s);
+        // Llegó desde otra página del sitio (no recarga): sin animaciones de entrada
+        const nav = performance.getEntriesByType('navigation')[0];
+        let interno = false;
+        try { interno = new URL(document.referrer).origin === location.origin; } catch {}
+        if (interno && nav?.type !== 'reload') document.documentElement.classList.add('navegado');
+      }
+    </script>
   </head>
   <body class="flex min-h-screen flex-col">
     <Patrones />

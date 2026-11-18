@@ -40,5 +40,7 @@ const formato = new Intl.NumberFormat('es-CO');
     }, { threshold: 0.6 });
     els.forEach((el) => io.observe(el));
   }
-  document.addEventListener('astro:page-load', iniciarContadores);
+  // Con el router de Astro corre en cada cambio de página; con navegación nativa (Chrome Android) al cargar
+  if (document.documentElement.dataset.nav === 'nativa') iniciarContadores();
+  else document.addEventListener('astro:page-load', iniciarContadores);
 </script>

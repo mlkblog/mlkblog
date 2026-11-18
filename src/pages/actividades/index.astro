@@ -81,5 +81,7 @@ const conteo = (c: string) => actividades.filter((a) => a.data.categoria === c).
     const validos = [...grupo.querySelectorAll<HTMLButtonElement>('button')].map((b) => b.dataset.filtro);
     if (inicial && validos.includes(inicial)) aplicar(inicial);
   }
-  document.addEventListener('astro:page-load', iniciarFiltros);
+  // Con el router de Astro corre en cada cambio de página; con navegación nativa (Chrome Android) al cargar
+  if (document.documentElement.dataset.nav === 'nativa') iniciarFiltros();
+  else document.addEventListener('astro:page-load', iniciarFiltros);
 </script>
