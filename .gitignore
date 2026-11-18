@@ -22,3 +22,11 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# informe generado por npm run auditar
+seguridad/informe.md
+
+# claves y certificados
+*.pem
+*.key
+.env.*

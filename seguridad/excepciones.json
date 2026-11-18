@@ -1,0 +1,11 @@
+{
+  "_nota": "Vulnerabilidades altas aceptadas temporalmente. Cada una necesita motivo y fecha límite; vencida la fecha, la auditoría vuelve a fallar hasta que se revise.",
+  "excepciones": [
+    {
+      "id": "GHSA-fc5q-39xc-vjpf",
+      "paquete": "picomatch (dependencia de Astro, Vite y Tailwind)",
+      "motivo": "ReDoS al evaluar patrones glob escritos por un atacante. Solo corre al construir el sitio, con patrones fijos del proyecto; el sitio publicado es HTML estático y no incluye este paquete. No hay versión corregida (4.0.7 es la última). Dependabot avisará cuando salga.",
+      "revisarAntesDe": "2027-02-15"
+    }
+  ]
+}

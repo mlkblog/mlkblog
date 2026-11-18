@@ -7,10 +7,12 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/csp.mjs",
     "preview": "astro preview",
     "astro": "astro",
-    "verificar": "astro check && astro build && node scripts/verificar.mjs"
+    "verificar": "astro check && npm run build && node scripts/verificar.mjs && node scripts/auditar-seguridad.mjs",
+    "auditar": "node scripts/auditar-dependencias.mjs && npm run build && node scripts/auditar-seguridad.mjs --informe",
+    "limpiar-fotos": "node scripts/limpiar-fotos.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",

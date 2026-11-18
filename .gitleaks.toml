@@ -1,0 +1,7 @@
+# Configuración de gitleaks: reglas por defecto + excepción para el script que contiene los patrones de búsqueda.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Patrones de detección, no secretos reales"
+paths = ['''scripts/auditar-seguridad\.mjs''']

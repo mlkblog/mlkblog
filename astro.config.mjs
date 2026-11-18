@@ -15,6 +15,10 @@ export default defineConfig({
   // "hover"). Astro la omite con ahorro de datos activado o conexión lenta. Cada página pesa ~10 KB comprimida.
   prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
 
+  // Política de seguridad de contenido (CSP): la escribe scripts/csp.mjs después de construir.
+  // (La CSP integrada de Astro calcula hashes por página, y el router de Astro carga estilos y
+  // scripts de otras páginas que quedarían bloqueados.)
+
   // CSS incrustado en cada página (~5 KB comprimido): elimina la única petición que bloqueaba el primer render
   build: { inlineStylesheets: 'always' },
 
@@ -37,8 +41,14 @@ export default defineConfig({
     },
   ],
 
+  // Sin resaltado de código (Shiki usa estilos en línea que la CSP bloquearía)
+  markdown: { syntaxHighlight: false },
+
   vite: {
     plugins: [tailwindcss()],
+    // Scripts de módulo siempre como archivo propio (nunca en línea): la CSP los permite con 'self'
+    // y el router de Astro no necesita inyectar un script data: para esperarlos (la CSP lo bloquearía).
+    build: { assetsInlineLimit: 0 },
   },
 
   integrations: [sitemap()],

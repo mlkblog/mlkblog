@@ -26,3 +26,7 @@ npm run verificar  # tipos + build + revisión de enlaces, alt y metadatos
 ```
 
 Las reglas de diseño (paleta, tipografías, logo, rendimiento) están en [CLAUDE.md](CLAUDE.md).
+
+## Seguridad
+
+Antes de publicar una crónica, lee la lista «Antes de publicar una crónica» en [SECURITY.md](SECURITY.md): autorización de imagen, sin teléfonos, direcciones ni documentos, y la ubicación de la cámara apagada. Si la publicación se detiene, la pestaña **Actions** explica qué encontró la auditoría.

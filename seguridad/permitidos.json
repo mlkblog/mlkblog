@@ -1,0 +1,6 @@
+{
+  "_nota": "Datos de contacto que SÍ pueden aparecer en el sitio (los institucionales del grupo). Todo otro correo o teléfono detiene la publicación. Agrega aquí el correo oficial cuando lo tengan.",
+  "sitio": "https://mlkblog.github.io",
+  "correos": ["@ejemplo.org"],
+  "telefonos": []
+}

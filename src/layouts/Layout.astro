@@ -41,6 +41,8 @@ const reglasEspeculacion = JSON.stringify({
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={descripcion} />
+    <!-- Al seguir un enlace a otro sitio solo se envía el dominio, nunca la ruta completa -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="canonical" href={canonica} />
     <link rel="sitemap" href={ruta("/sitemap-index.xml")} />
     <meta property="og:type" content="website" />
@@ -65,7 +67,9 @@ const reglasEspeculacion = JSON.stringify({
       if (matchMedia('(hover: none) and (pointer: coarse)').matches) document.startViewTransition = undefined;
     </script>
     <ClientRouter fallback="swap" />
-    <script is:inline define:vars={{ reglas: reglasEspeculacion }}>
+    <!-- Reglas de especulación como datos: scripts/csp.mjs autoriza este texto exacto por hash -->
+    <script is:inline type="application/json" id="reglas-especulacion" set:html={reglasEspeculacion}></script>
+    <script is:inline>
       // Chrome en Android (con ≥ 2 GB de RAM): navegación nativa con pre-renderizado. Chrome arma las
       // páginas del menú en segundo plano y al tocarlas se muestran ya listas, sin esperar la red.
       // Va después de <ClientRouter>: apagar el router (fallback "none") antes de que cargue su módulo.
@@ -80,7 +84,7 @@ const reglasEspeculacion = JSON.stringify({
         document.documentElement.dataset.nav = 'nativa';
         const s = document.createElement('script');
         s.type = 'speculationrules';
-        s.textContent = reglas;
+        s.textContent = document.getElementById('reglas-especulacion').textContent;
         document.head.append(s);
         // Llegó desde otra página del sitio (no recarga): sin animaciones de entrada
         const nav = performance.getEntriesByType('navigation')[0];

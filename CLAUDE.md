@@ -55,6 +55,16 @@ Auditoría Lighthouse del 15 nov 2026: 99–100 en rendimiento, 100 en accesibil
 - Perfil de un cambio de sección (CPU 6x): recálculo de estilos 50–90 ms, View Transition 60–110 ms, maquetado y pintura 27–58 ms. La página tiene ~160 elementos y 55 reglas CSS: no hay peso que recortar; mantenerla así.
 - Imágenes de contenido en JPG/PNG (Astro genera WebP). No uses SVG con patrones como foto: son caros de dibujar en teléfonos.
 
+### Seguridad (no romper) — detalle en `SECURITY.md`
+
+- **CSP**: `scripts/csp.mjs` corre después de `astro build` y escribe la misma política en un `<meta>` al inicio de cada página, con el hash de todos los `<script>` y `<style>` en línea del sitio (el router de Astro carga estilos de otras páginas, por eso la política es una sola). No uses la CSP integrada de Astro (`security.csp`): calcula hashes por página y rompe el router.
+- Nada de scripts, estilos, fuentes, imágenes ni iframes de otros dominios; nada de `onclick=` ni `javascript:`; nada de `<script>` en línea sin pasar por el build. Los scripts de módulo van como archivo propio (`vite.build.assetsInlineLimit: 0`).
+- Las reglas de especulación viajan como `<script type="application/json" id="reglas-especulacion">` y la CSP autoriza ese texto por hash.
+- `npm run verificar` incluye `scripts/auditar-seguridad.mjs`: falla con secretos, correos/teléfonos/documentos no autorizados (`seguridad/permitidos.json`), recursos externos, CSP débil, archivos internos o fotos con metadatos. El correo oficial del grupo debe agregarse a `permitidos.json` antes de publicarlo.
+- `npm run auditar`: dependencias (excepciones con fecha en `seguridad/excepciones.json`) + build + auditoría con informe en `seguridad/informe.md`.
+- `npm run limpiar-fotos` quita GPS y datos de cámara; corre en cada publicación y en el flujo `limpiar-fotos.yml`.
+- Acciones de GitHub fijadas por SHA y con permisos mínimos; Dependabot las actualiza.
+
 ## Cómo publicar una obra social (para becarios)
 
 1. Crea una carpeta en `src/content/actividades/` con el nombre de la URL, p. ej. `2026-03-jornada-salud/`.
@@ -62,6 +72,7 @@ Auditoría Lighthouse del 15 nov 2026: 99–100 en rendimiento, 100 en accesibil
 3. Llena el encabezado (frontmatter) siguiendo una crónica existente. Campos obligatorios: `titulo`, `fecha`, `ubicacion`, `resumen` (máx. 220 caracteres), `categoria`, `imagen`, `imagenAlt`, `beneficiarios`, `horasVoluntariado`. Opcionales: `aliados`, `autor`, `galeria` (lista de `{ src, alt }`), `ejemplo`.
 4. Categorías permitidas: `Educación`, `Medio Ambiente`, `Comunidad`. Para agregar una, edítala en `src/content.config.ts` (constante `CATEGORIAS`).
 5. Si un campo falta o tiene un tipo incorrecto, `npm run dev` muestra el error exacto.
+6. Antes de publicar, revisa la lista «Antes de publicar una crónica» de `SECURITY.md` (autorización de imagen, sin datos personales).
 
 Los contadores de la portada (obras, personas, horas) se calculan solos sumando `beneficiarios` y `horasVoluntariado` de todas las crónicas. El equipo se edita en `src/content/becarios.json`.
 
