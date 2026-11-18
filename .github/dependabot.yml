@@ -10,6 +10,11 @@ updates:
       dependencias:
         patterns: ['*']
     open-pull-requests-limit: 5
+    ignore:
+      # @astrojs/check 0.9.12 solo acepta TypeScript 5 o 6 (npm ci falla con la 7).
+      # Quitar esta regla cuando una versión de @astrojs/check admita TypeScript 7.
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
     schedule:
