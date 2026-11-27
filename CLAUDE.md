@@ -86,21 +86,31 @@ El logo es monocromo: azul marino sobre blanco. El escaneo muestrea `#2F3879`, q
 
 | Token Tailwind | HEX | Origen | Uso |
 | --- | --- | --- | --- |
-| `azul` | `#273591` | Dark Blue 072C | Color de firma: títulos, enlaces, bandas, botones |
-| `noche` | `#1B2462` | Azul del logo oscurecido | Pie de página, hover, banda de cifras |
-| `sol` | `#FFCB04` | Yellow 116C | Acento cálido único: subrayado activo, foco, CTA. Nunca texto sobre blanco |
-| `rojo` | `#CB1334` | Dark Red 199C | Acento sutil secundario: una píldora del mosaico, comillas de citas, borde de testimonios, categoría Comunidad |
-| `rosa` | `#FBE5E9` | Tinte de 199C | Fondo de la etiqueta Comunidad (texto `rojo`, 4,7:1) |
-| `cielo` | `#ADDFE9` | Light Blue 635C | Fondos suaves (citas, etiqueta Educación) |
-| `agua` | `#DCEDF3` | Tinte de Light Blue 7695C | Fondo de la etiqueta Medio Ambiente (texto `noche`) |
-| `papel` | `#F7F7F3` | 11-0601 TCX | Fondo de secciones alternas |
+| `azul` | `#273591` | Dark Blue 072C | Identidad: títulos, enlaces, banda de cifras, botón secundario |
+| `noche` | `#1B2462` | azul 800 | Pie de página, hover |
+| `lavanda` | `#E9ECFA` | Tinte del azul | Sección de valores, círculo del equipo |
+| `sol` | `#FFCB04` | Yellow 116C | Acción: botón «Súmate» y «Apoyar», subrayado activo, foco. Nunca texto sobre blanco |
+| `crema` | `#FFF6D6` | Tinte del sol | Superficies destacadas: etiqueta del Hero, «Historia del programa», tarjeta Voluntariado |
+| `ambar` | `#835400` | sol 600 | Texto sobre `crema` (6:1) |
+| `rojo` | `#CB1334` | Dark Red 199C | Voz de las personas (citas, testimonios) y categoría Comunidad |
+| `rosa` | `#FBE5E9` | Tinte de 199C | Fondo de citas en crónicas, etiqueta Comunidad (texto `rojo`, 4,7:1) |
+| `cielo` | `#ADDFE9` | Light Blue 635C | Banda de la cita de MLK, píldora del mosaico |
+| `agua` | `#DCEDF3` | Tinte de Light Blue 7695C | Categoría Educación, tarjeta Alianzas |
+| `mar` | `#224F57` | cielo 700 | Texto sobre `cielo`/`agua` (6,2–7,5:1), tono pleno de Educación |
+| `verde` | `#136F44` | Escala OKLCH nueva | Tono pleno de Medio Ambiente (6,2:1 sobre blanco) |
+| `menta` | `#E1F3E8` | Tinte del verde | Fondo de Medio Ambiente (texto `verde`, 5,4:1) |
+| `papel` | `#F7F7F3` | 11-0601 TCX | Fondos neutros |
 | `tinta` | `#12162E` | — | Texto principal |
-| `gris` | `#4B5170` | — | Texto secundario (7:1 sobre blanco) |
+| `gris` | `#4B5170` | — | Texto secundario (≥ 6,5:1 sobre todos los tintes) |
 | `linea` | `#D6D7D6` | Light Gray 2C | Bordes y divisores |
 
-Contraste verificado (WCAG 2.1): `azul` sobre blanco 10,4:1 · `sol` sobre `azul` 6,8:1 · `rojo` sobre blanco 5,7:1 · `rojo` sobre `rosa` 4,7:1 · `tinta` sobre blanco > 17:1.
+Escalas generadas en OKLCH con ui-color-palette (preset Tailwind 50–950); de cada familia se usa un tono pleno y un tinte. Todos los pares de texto pasan WCAG 2.1 AA (la mayoría AAA): `azul` sobre blanco 10,5:1 · `noche` sobre `sol` 9,4:1 · `ambar` sobre `crema` 6,0:1 · `mar` sobre `cielo` 6,2:1 · `verde` sobre `menta` 5,4:1 · `rojo` sobre `rosa` 4,7:1 · blanco sobre `mar`/`verde`/`rojo` ≥ 5,7:1. Si agregas un color, verifica su contraste antes de usarlo en texto.
 
-Regla de proporción: blanco y azul dominan (~85%), amarillo y rojo son acentos (~5% cada uno). El amarillo marca acción y estado activo (subrayados, foco, píldora central); el rojo marca la voz de las personas (citas, testimonios) y la comunidad. Nunca rojo en botones ni en textos largos, y nunca rojo y amarillo juntos en el mismo elemento.
+Reglas de uso:
+- Blanco y azul siguen dominando; los demás colores dan identidad a cada cosa, no decoran. Cada familia tiene un significado: sol = acción, rojo = voz de las personas y Comunidad, cielo/mar = Educación, verde = Medio Ambiente, crema = algo destacado.
+- Cada categoría usa su familia en todo el sitio: etiqueta, fondo de la foto, filtro activo y panel de datos de la crónica.
+- El mosaico del Hero y los valores de Nosotros usan los cinco tonos plenos (cielo, azul, sol, verde, rojo).
+- Nunca rojo en botones ni en textos largos, y nunca rojo y amarillo juntos en el mismo elemento.
 
 Colores por categoría: `src/lib/categorias.ts`.
 

@@ -1,13 +1,28 @@
 @import "tailwindcss";
 
+/* Paleta de marca ampliada (escalas OKLCH generadas con ui-color-palette; contraste verificado en CLAUDE.md).
+   Cada familia tiene un tono sólido y un tinte de fondo: así cada categoría y cada sección tiene su color
+   sin salir de la marca. */
 @theme {
-  --color-azul: #273591;
-  --color-noche: #1b2462;
-  --color-sol: #ffcb04;
-  --color-rojo: #cb1334;   /* Dark Red 199C — acento sutil */
-  --color-rosa: #fbe5e9;   /* tinte claro del rojo para fondos de etiqueta */
-  --color-agua: #dcedf3;   /* tinte de Light Blue 7695C */
-  --color-cielo: #addfe9;
+  /* Azul — identidad: títulos, enlaces, bandas */
+  --color-azul: #273591;    /* Dark Blue 072C */
+  --color-noche: #1b2462;   /* azul 800: pie de página, hover */
+  --color-lavanda: #e9ecfa; /* tinte del azul para superficies suaves */
+  /* Sol — acción: botones principales, subrayados, foco */
+  --color-sol: #ffcb04;     /* Yellow 116C */
+  --color-crema: #fff6d6;   /* tinte cálido para superficies destacadas */
+  --color-ambar: #835400;   /* sol 600: texto sobre crema */
+  /* Rojo — la voz de las personas y la categoría Comunidad */
+  --color-rojo: #cb1334;    /* Dark Red 199C */
+  --color-rosa: #fbe5e9;
+  /* Cielo / mar — categoría Educación y citas */
+  --color-cielo: #addfe9;   /* Light Blue 635C */
+  --color-agua: #dcedf3;    /* tinte de Light Blue 7695C */
+  --color-mar: #224f57;     /* cielo 700: texto sobre cielo y agua */
+  /* Verde — categoría Medio Ambiente */
+  --color-verde: #136f44;
+  --color-menta: #e1f3e8;
+  /* Neutros */
   --color-papel: #f7f7f3;
   --color-tinta: #12162e;
   --color-gris: #4b5170;
@@ -49,14 +64,14 @@
   .zona-toque { position: relative; }
   .zona-toque::after { content: ''; position: absolute; inset: -0.6rem -0.25rem; }
   /* usar junto a .btn: class="btn btn-sol" */
-  .btn-sol { @apply bg-sol text-tinta hover:bg-white; }
+  .btn-sol { @apply bg-sol text-tinta hover:bg-noche hover:text-sol; }
   .btn-azul { @apply bg-azul text-white hover:bg-noche; }
   .btn-borde { @apply border-2 border-azul text-azul hover:bg-azul hover:text-white; }
   .prosa { @apply max-w-prose text-lg; }
   .prosa > * + * { margin-top: 1.1em; }
   .prosa h2 { @apply text-2xl sm:text-3xl font-extrabold; margin-top: 1.8em; }
   .prosa h3 { @apply text-xl font-bold; margin-top: 1.5em; }
-  .prosa blockquote { @apply border-l-4 border-rojo pl-5 font-display text-xl text-azul; line-height: 1.35; }
+  .prosa blockquote { @apply rounded-r-2xl border-l-4 border-rojo bg-rosa py-4 pr-5 pl-5 font-display text-xl text-noche; line-height: 1.35; }
   .prosa ul { @apply list-disc pl-6; }
   .prosa ol { @apply list-decimal pl-6; }
   .prosa a { @apply text-azul underline decoration-sol decoration-2 underline-offset-4; }

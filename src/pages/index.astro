@@ -5,18 +5,26 @@ import Layout from '../layouts/Layout.astro';
 import Mosaico from '../components/Mosaico.astro';
 import Contador from '../components/Contador.astro';
 import TarjetaActividad from '../components/TarjetaActividad.astro';
+import { enlaceCorreo } from '../lib/contacto';
 
 const actividades = (await getCollection('actividades')).sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
 const recientes = actividades.slice(0, 3);
 const personas = actividades.reduce((s, a) => s + a.data.beneficiarios, 0);
 const horas = actividades.reduce((s, a) => s + a.data.horasVoluntariado, 0);
 const hayEjemplos = actividades.some((a) => a.data.ejemplo);
+
+// Formas de sumarse: cada una con su color de la paleta (tinte de fondo + píldora del tono pleno)
+const formas = [
+  { titulo: 'Voluntariado', texto: 'Acompáñanos en la próxima jornada: siembras, clubes de lectura, brigadas en el barrio. Solo hacen falta ganas y una mañana libre.', accion: 'Quiero ser voluntario', asunto: 'Quiero ser voluntario', fondo: 'bg-crema', pildora: 'bg-sol' },
+  { titulo: 'Alianzas', texto: 'Si tu fundación, colegio o empresa trabaja con comunidades, diseñemos juntos una obra social con impacto medible.', accion: 'Proponer una alianza', asunto: 'Propuesta de alianza', fondo: 'bg-agua', pildora: 'bg-mar' },
+  { titulo: 'Donaciones en especie', texto: 'Libros, plántulas, herramientas o refrigerios para los voluntarios. Te contamos en qué jornada se usó cada aporte.', accion: 'Ofrecer una donación', asunto: 'Donación en especie', fondo: 'bg-rosa', pildora: 'bg-rojo' },
+];
 ---
 <Layout>
   <!-- Hero -->
   <section class="contenedor grid items-center gap-10 pb-16 pt-10 md:grid-cols-[1.15fr_1fr] md:pb-24 md:pt-16">
     <div class="flex flex-col gap-7">
-      <p class="font-display text-lg font-bold text-gris">Programa de Becas Martin Luther King Jr.</p>
+      <p class="self-start rounded-full bg-crema px-4 py-1.5 font-display font-bold text-ambar">Programa de Becas Martin Luther King Jr., Barranquilla</p>
       <h1 class="text-5xl font-extrabold sm:text-6xl lg:text-7xl">Servir también es una forma de liderar.</h1>
       <p class="prosa text-xl text-gris">
         Somos jóvenes becarios del Centro Colombo Americano. Inspirados en el legado de Martin Luther King Jr., organizamos obras sociales con comunidades y aquí contamos qué hicimos, con quién y qué cambió.
@@ -39,9 +47,9 @@ const hayEjemplos = actividades.some((a) => a.data.ejemplo);
         <p class="text-cielo">Cifras sumadas automáticamente a partir de las crónicas publicadas.{hayEjemplos && ' Hoy incluyen crónicas de ejemplo.'}</p>
       </div>
       <div class="grid gap-8 sm:grid-cols-3">
-        <Contador valor={actividades.length} etiqueta={actividades.length === 1 ? 'obra social' : 'obras sociales'} />
-        <Contador valor={personas} etiqueta="personas acompañadas" />
-        <Contador valor={horas} etiqueta="horas de voluntariado" />
+        <Contador valor={actividades.length} etiqueta={actividades.length === 1 ? 'obra social' : 'obras sociales'} acento="bg-sol" />
+        <Contador valor={personas} etiqueta="personas acompañadas" acento="bg-cielo" />
+        <Contador valor={horas} etiqueta="horas de voluntariado" acento="bg-menta" />
       </div>
     </div>
   </section>
@@ -57,6 +65,26 @@ const hayEjemplos = actividades.some((a) => a.data.ejemplo);
     </div>
   </section>
 
+  <!-- Cómo sumarse -->
+  <section class="cv-auto border-t border-linea" aria-labelledby="titulo-sumarte">
+    <div class="contenedor flex flex-col gap-10 py-20">
+      <div class="flex flex-col gap-3">
+        <h2 id="titulo-sumarte" class="text-4xl font-extrabold sm:text-5xl">Súmate a la próxima obra</h2>
+        <p class="prosa text-gris">Cada jornada sale adelante gracias a personas y organizaciones de Barranquilla. Hay tres maneras de aportar.</p>
+      </div>
+      <ul class="grid gap-5 md:grid-cols-3">
+        {formas.map((f) => (
+          <li class:list={['flex flex-col gap-4 rounded-foto p-7', f.fondo]}>
+            <span class:list={['block h-2 w-12 rounded-full', f.pildora]} aria-hidden="true"></span>
+            <h3 class="text-2xl font-extrabold">{f.titulo}</h3>
+            <p class="flex-1 text-tinta">{f.texto}</p>
+            <a href={enlaceCorreo(f.asunto)} class="inline-flex min-h-11 items-center self-start font-display font-bold text-azul underline decoration-2 underline-offset-4 hover:decoration-sol">{f.accion}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
   <!-- Cita -->
   <section class="cv-auto bg-cielo">
     <figure class="contenedor flex flex-col gap-6 py-20">
@@ -64,7 +92,7 @@ const hayEjemplos = actividades.some((a) => a.data.ejemplo);
       <blockquote class="max-w-4xl font-display text-3xl font-extrabold leading-tight text-azul sm:text-5xl">
         La pregunta más persistente y urgente de la vida es: ¿qué estás haciendo por los demás?
       </blockquote>
-      <figcaption class="text-lg text-tinta">Martin Luther King Jr., Montgomery, 1957</figcaption>
+      <figcaption class="text-lg font-semibold text-mar">Martin Luther King Jr., Montgomery, 1957</figcaption>
     </figure>
   </section>
 </Layout>

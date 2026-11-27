@@ -3,7 +3,7 @@ import { ruta } from '../lib/rutas';
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { fechaLarga } from '../lib/formato';
-import { claseCategoria } from '../lib/categorias';
+import { coloresCategoria } from '../lib/categorias';
 
 interface Props {
   actividad: CollectionEntry<'actividades'>;
@@ -16,6 +16,7 @@ interface Props {
 const { actividad, destacada = false, nivel = 3, prioridad = false } = Astro.props;
 const d = actividad.data;
 const Titulo = `h${nivel}` as 'h2' | 'h3';
+const color = coloresCategoria(d.categoria);
 ---
 <a
   href={ruta(`/actividades/${actividad.id}/`)}
@@ -24,7 +25,7 @@ const Titulo = `h${nivel}` as 'h2' | 'h3';
 >
   {/* La transición de foto va en el contenedor (que recorta las esquinas) y solo se activa en la
       tarjeta tocada (ver Layout.astro): las demás fotos no se capturan en cada cambio de sección */}
-  <div class="foto-vt overflow-hidden rounded-foto bg-azul" data-foto-id={actividad.id}>
+  <div class:list={['foto-vt overflow-hidden rounded-foto', color.solido]} data-foto-id={actividad.id}>
     <Image
       src={d.imagen}
       alt={d.imagenAlt}
@@ -37,11 +38,11 @@ const Titulo = `h${nivel}` as 'h2' | 'h3';
   </div>
   <div class="flex flex-col gap-2">
     <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gris">
-      <span class:list={['rounded-full px-3 py-0.5 font-semibold', claseCategoria(d.categoria)]}>{d.categoria}</span>
+      <span class:list={['rounded-full px-3 py-0.5 font-semibold', color.etiqueta]}>{d.categoria}</span>
       <time datetime={d.fecha.toISOString()}>{fechaLarga(d.fecha)}</time>
       {d.ejemplo && <span class="rounded-full border border-linea px-3 py-0.5">Crónica de ejemplo</span>}
     </p>
-    <Titulo class:list={['font-extrabold group-hover:underline decoration-sol decoration-4 underline-offset-4', destacada ? 'text-3xl sm:text-4xl' : 'text-2xl']}>
+    <Titulo class:list={['font-extrabold text-azul group-hover:underline decoration-sol decoration-4 underline-offset-4', destacada ? 'text-3xl sm:text-4xl' : 'text-2xl']}>
       {d.titulo}
     </Titulo>
     <p class="max-w-prose text-gris">{d.resumen}</p>

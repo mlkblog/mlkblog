@@ -6,6 +6,8 @@ import { CATEGORIAS } from '../../content.config';
 
 const actividades = (await getCollection('actividades')).sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
 const conteo = (c: string) => actividades.filter((a) => a.data.categoria === c).length;
+// Color de cada filtro: el tono pleno de su categoría (src/lib/categorias.ts)
+const tono: Record<string, string> = { 'Educación': 'var(--color-mar)', 'Medio Ambiente': 'var(--color-verde)', 'Comunidad': 'var(--color-rojo)' };
 ---
 <Layout titulo="Actividades" descripcion="Crónicas de las obras sociales de los Becarios MLK: educación, medio ambiente y comunidad.">
   <section class="contenedor flex flex-col gap-10 pb-24 pt-12 md:pt-20">
@@ -17,7 +19,7 @@ const conteo = (c: string) => actividades.filter((a) => a.data.categoria === c).
     <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoría" data-filtros>
       <button type="button" data-filtro="todas" aria-pressed="true" class="filtro">Todas <span class="tabular-nums">({actividades.length})</span></button>
       {CATEGORIAS.map((c) => (
-        <button type="button" data-filtro={c} aria-pressed="false" class="filtro">{c} <span class="tabular-nums">({conteo(c)})</span></button>
+        <button type="button" data-filtro={c} aria-pressed="false" class="filtro" style={`--tono: ${tono[c] ?? 'var(--color-azul)'}`}><span class="punto" aria-hidden="true"></span>{c} <span class="tabular-nums">({conteo(c)})</span></button>
       ))}
     </div>
 
@@ -33,12 +35,13 @@ const conteo = (c: string) => actividades.filter((a) => a.data.categoria === c).
 <style>
   .filtro {
     @reference "../../styles/global.css";
-    @apply cursor-pointer rounded-full border-2 border-linea bg-white px-5 py-2 font-display font-bold text-tinta transition-colors hover:border-azul;
+    @apply inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border-2 border-linea bg-white px-5 py-2 font-display font-bold text-tinta transition-colors;
+    --tono: var(--color-azul);
   }
-  .filtro[aria-pressed='true'] {
-    @reference "../../styles/global.css";
-    @apply border-azul bg-azul text-white;
-  }
+  @media (hover: hover) { .filtro:hover { border-color: var(--tono); } }
+  .filtro[aria-pressed='true'] { border-color: var(--tono); background: var(--tono); color: #fff; }
+  .punto { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: var(--tono); }
+  .filtro[aria-pressed='true'] .punto { background: #fff; }
   [data-rejilla] > a { view-transition-name: var(--vt); }
 </style>
 

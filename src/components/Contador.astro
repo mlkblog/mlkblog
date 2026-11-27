@@ -1,9 +1,10 @@
 ---
-interface Props { valor: number; etiqueta: string }
-const { valor, etiqueta } = Astro.props;
+interface Props { valor: number; etiqueta: string; /** clase de fondo de la píldora de color sobre la cifra */ acento?: string }
+const { valor, etiqueta, acento = "bg-sol" } = Astro.props;
 const formato = new Intl.NumberFormat('es-CO');
 ---
 <div class="flex flex-col gap-1">
+  <span class:list={["mb-3 block h-2 w-12 rounded-full", acento]} aria-hidden="true"></span>
   <span
     class="font-display text-6xl sm:text-7xl font-extrabold tabular-nums leading-none text-white"
     data-contador data-valor={valor}
