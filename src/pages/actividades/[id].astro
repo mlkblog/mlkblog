@@ -5,6 +5,7 @@ import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import { fechaLarga, numero } from '../../lib/formato';
 import { coloresCategoria } from '../../lib/categorias';
+import { esObraSocial } from '../../content.config';
 
 export async function getStaticPaths() {
   const actividades = await getCollection('actividades');
@@ -15,11 +16,12 @@ const { actividad } = Astro.props;
 const d = actividad.data;
 const { Content } = await render(actividad);
 const color = coloresCategoria(d.categoria);
+const obra = esObraSocial(d.categoria);
 ---
 <Layout titulo={d.titulo} descripcion={d.resumen}>
   <article class="pb-24">
     <header class="contenedor flex flex-col gap-6 pt-10 md:pt-14">
-      <a href={ruta("/actividades/")} class="inline-flex min-h-11 items-center self-start font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8">Todas las obras sociales</a>
+      <a href={ruta("/actividades/")} class="inline-flex min-h-11 items-center self-start font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8">Todas las crónicas</a>
       <p class="flex flex-wrap items-center gap-x-3 gap-y-2 text-gris">
         <a href={ruta(`/actividades/?categoria=${encodeURIComponent(d.categoria)}`)} class:list={['zona-toque rounded-full px-3 py-0.5 font-semibold', color.etiqueta]}>{d.categoria}</a>
         <time datetime={d.fecha.toISOString()}>{fechaLarga(d.fecha)}</time>
@@ -49,15 +51,20 @@ const color = coloresCategoria(d.categoria);
       </div>
 
       <aside class="order-first flex flex-col gap-6 self-start lg:order-none lg:sticky lg:top-28" aria-label="Datos de la actividad">
-        <dl class:list={['grid grid-cols-2 gap-5 rounded-foto p-6', color.fondo, ' lg:grid-cols-1 [&>div:nth-child(n+3)]:col-span-2 lg:[&>div:nth-child(n+3)]:col-span-1']}>
-          <div>
-            <dt class="text-sm text-gris">Personas acompañadas</dt>
-            <dd class:list={['font-display text-5xl font-extrabold tabular-nums', color.texto]}>{numero(d.beneficiarios)}</dd>
-          </div>
-          <div>
-            <dt class="text-sm text-gris">Horas de voluntariado</dt>
-            <dd class:list={['font-display text-5xl font-extrabold tabular-nums', color.texto]}>{numero(d.horasVoluntariado)}</dd>
-          </div>
+        <dl class:list={['grid gap-5 rounded-foto p-6', color.fondo, obra ? 'grid-cols-2 lg:grid-cols-1 [&>div:nth-child(n+3)]:col-span-2 lg:[&>div:nth-child(n+3)]:col-span-1' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-1']}>
+          {/* Personas y horas solo en obras sociales (no en crónicas de «Nuestro grupo») */}
+          {obra && (
+            <>
+            <div>
+              <dt class="text-sm text-gris">Personas acompañadas</dt>
+              <dd class:list={['font-display text-5xl font-extrabold tabular-nums', color.texto]}>{numero(d.beneficiarios)}</dd>
+            </div>
+            <div>
+              <dt class="text-sm text-gris">Horas de voluntariado</dt>
+              <dd class:list={['font-display text-5xl font-extrabold tabular-nums', color.texto]}>{numero(d.horasVoluntariado)}</dd>
+            </div>
+              </>
+          )}
           <div>
             <dt class="text-sm text-gris">Lugar</dt>
             <dd class="font-semibold">{d.ubicacion}</dd>

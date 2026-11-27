@@ -7,13 +7,13 @@ import { CATEGORIAS } from '../../content.config';
 const actividades = (await getCollection('actividades')).sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
 const conteo = (c: string) => actividades.filter((a) => a.data.categoria === c).length;
 // Color de cada filtro: el tono pleno de su categoría (src/lib/categorias.ts)
-const tono: Record<string, string> = { 'Educación': 'var(--color-mar)', 'Medio Ambiente': 'var(--color-verde)', 'Comunidad': 'var(--color-rojo)' };
+const tono: Record<string, string> = { 'Educación': 'var(--color-mar)', 'Medio Ambiente': 'var(--color-verde)', 'Comunidad': 'var(--color-rojo)', 'Nuestro grupo': 'var(--color-ambar)' };
 ---
-<Layout titulo="Actividades" descripcion="Crónicas de las obras sociales de los Becarios MLK: educación, medio ambiente y comunidad.">
+<Layout titulo="Actividades" descripcion="Crónicas de los Becarios MLK: obras sociales de educación, medio ambiente y comunidad, y la vida del grupo.">
   <section class="contenedor flex flex-col gap-10 pb-24 pt-12 md:pt-20">
     <div class="flex flex-col gap-5">
-      <h1 class="text-5xl font-extrabold sm:text-6xl">Obras sociales</h1>
-      <p class="prosa text-xl text-gris">Cada crónica cuenta una actividad: dónde fue, con quién la hicimos y a cuántas personas llegó.</p>
+      <h1 class="text-5xl font-extrabold sm:text-6xl">Crónicas</h1>
+      <p class="prosa text-xl text-gris">Nuestras obras sociales y la vida del grupo: dónde estuvimos, con quién trabajamos y qué cambió.</p>
     </div>
 
     <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoría" data-filtros>

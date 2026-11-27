@@ -6,12 +6,15 @@ import Mosaico from '../components/Mosaico.astro';
 import Contador from '../components/Contador.astro';
 import TarjetaActividad from '../components/TarjetaActividad.astro';
 import { enlaceCorreo } from '../lib/contacto';
+import { esObraSocial } from '../content.config';
 
 const actividades = (await getCollection('actividades')).sort((a, b) => b.data.fecha.valueOf() - a.data.fecha.valueOf());
 const recientes = actividades.slice(0, 3);
-const personas = actividades.reduce((s, a) => s + a.data.beneficiarios, 0);
-const horas = actividades.reduce((s, a) => s + a.data.horasVoluntariado, 0);
-const hayEjemplos = actividades.some((a) => a.data.ejemplo);
+// Las cifras de impacto solo cuentan obras sociales (no las crónicas de «Nuestro grupo»)
+const obras = actividades.filter((a) => esObraSocial(a.data.categoria));
+const personas = obras.reduce((s, a) => s + a.data.beneficiarios, 0);
+const horas = obras.reduce((s, a) => s + a.data.horasVoluntariado, 0);
+const hayEjemplos = obras.some((a) => a.data.ejemplo);
 
 // Formas de sumarse: cada una con su color de la paleta (tinte de fondo + píldora del tono pleno)
 const formas = [
@@ -30,7 +33,7 @@ const formas = [
         Somos jóvenes becarios del Centro Colombo Americano. Inspirados en el legado de Martin Luther King Jr., organizamos obras sociales con comunidades y aquí contamos qué hicimos, con quién y qué cambió.
       </p>
       <div class="flex flex-wrap gap-3">
-        <a href={ruta("/actividades/")} class="btn btn-azul">Ver las obras sociales</a>
+        <a href={ruta("/actividades/")} class="btn btn-azul">Leer las crónicas</a>
         <a href={ruta("/nosotros/")} class="btn btn-borde">Conocer al equipo</a>
       </div>
     </div>
@@ -47,7 +50,7 @@ const formas = [
         <p class="text-cielo">Cifras sumadas automáticamente a partir de las crónicas publicadas.{hayEjemplos && ' Hoy incluyen crónicas de ejemplo.'}</p>
       </div>
       <div class="grid gap-8 sm:grid-cols-3">
-        <Contador valor={actividades.length} etiqueta={actividades.length === 1 ? 'obra social' : 'obras sociales'} acento="bg-sol" />
+        <Contador valor={obras.length} etiqueta={obras.length === 1 ? 'obra social' : 'obras sociales'} acento="bg-sol" />
         <Contador valor={personas} etiqueta="personas acompañadas" acento="bg-cielo" />
         <Contador valor={horas} etiqueta="horas de voluntariado" acento="bg-menta" />
       </div>
@@ -57,7 +60,7 @@ const formas = [
   <!-- Recientes -->
   <section class="contenedor flex flex-col gap-10 py-20">
     <div class="flex flex-wrap items-end justify-between gap-4">
-      <h2 class="text-4xl font-extrabold sm:text-5xl">Obras sociales recientes</h2>
+      <h2 class="text-4xl font-extrabold sm:text-5xl">Crónicas recientes</h2>
       <a href={ruta("/actividades/")} class="inline-flex min-h-11 items-center font-display font-bold text-azul underline decoration-sol decoration-4 underline-offset-8">Ver todas</a>
     </div>
     <div class="grid gap-x-8 gap-y-14 md:grid-cols-3">

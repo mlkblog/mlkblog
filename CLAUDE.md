@@ -70,7 +70,7 @@ Auditoría Lighthouse del 15 nov 2026: 99–100 en rendimiento, 100 en accesibil
 1. Crea una carpeta en `src/content/actividades/` con el nombre de la URL, p. ej. `2026-03-jornada-salud/`.
 2. Dentro, crea `index.md` y copia las fotos (`.jpg`, `.png`, `.webp`).
 3. Llena el encabezado (frontmatter) siguiendo una crónica existente. Campos obligatorios: `titulo`, `fecha`, `ubicacion`, `resumen` (máx. 220 caracteres), `categoria`, `imagen`, `imagenAlt`, `beneficiarios`, `horasVoluntariado`. Opcionales: `aliados`, `autor`, `galeria` (lista de `{ src, alt }`), `ejemplo`.
-4. Categorías permitidas: `Educación`, `Medio Ambiente`, `Comunidad`. Para agregar una, edítala en `src/content.config.ts` (constante `CATEGORIAS`).
+4. Categorías permitidas: `Educación`, `Medio Ambiente`, `Comunidad` (obras sociales) y `Nuestro grupo` (presentaciones, encuentros y vida del grupo: no suma a las cifras de impacto y no lleva `beneficiarios` ni `horasVoluntariado`). Para agregar una, edítala en `src/content.config.ts` (constante `CATEGORIAS`).
 5. Si un campo falta o tiene un tipo incorrecto, `npm run dev` muestra el error exacto.
 6. Antes de publicar, revisa la lista «Antes de publicar una crónica» de `SECURITY.md` (autorización de imagen, sin datos personales).
 

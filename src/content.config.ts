@@ -2,8 +2,11 @@ import { defineCollection } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-/** Categorías de obras sociales. Para agregar una nueva, añádela aquí. */
-export const CATEGORIAS = ['Educación', 'Medio Ambiente', 'Comunidad'] as const;
+/** Categorías de las crónicas. Para agregar una nueva, añádela aquí y dale color en src/lib/categorias.ts. */
+export const CATEGORIAS = ['Educación', 'Medio Ambiente', 'Comunidad', 'Nuestro grupo'] as const;
+/** Categorías que no son obras sociales: no suman a las cifras de impacto ni muestran personas u horas. */
+export const SIN_IMPACTO: readonly string[] = ['Nuestro grupo'];
+export const esObraSocial = (categoria: string) => !SIN_IMPACTO.includes(categoria);
 
 const actividades = defineCollection({
   // Cada obra social es una carpeta con index.md + sus fotos
@@ -17,8 +20,9 @@ const actividades = defineCollection({
       categoria: z.enum(CATEGORIAS),
       imagen: image(),
       imagenAlt: z.string().min(5),
-      beneficiarios: z.number().int().nonnegative(),
-      horasVoluntariado: z.number().nonnegative(),
+      /** Obligatorios en obras sociales; en «Nuestro grupo» se omiten (0) */
+      beneficiarios: z.number().int().nonnegative().default(0),
+      horasVoluntariado: z.number().nonnegative().default(0),
       aliados: z.array(z.string()).default([]),
       autor: z.string().optional(),
       galeria: z.array(z.object({ src: image(), alt: z.string().min(3) })).default([]),

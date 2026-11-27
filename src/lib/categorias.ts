@@ -12,6 +12,7 @@ const colores: Record<string, Colores> = {
   'Educación': { etiqueta: 'bg-agua text-mar', fondo: 'bg-agua', solido: 'bg-mar', texto: 'text-mar', activo: 'aria-pressed:border-mar aria-pressed:bg-mar' },
   'Medio Ambiente': { etiqueta: 'bg-menta text-verde', fondo: 'bg-menta', solido: 'bg-verde', texto: 'text-verde', activo: 'aria-pressed:border-verde aria-pressed:bg-verde' },
   'Comunidad': { etiqueta: 'bg-rosa text-rojo', fondo: 'bg-rosa', solido: 'bg-rojo', texto: 'text-rojo', activo: 'aria-pressed:border-rojo aria-pressed:bg-rojo' },
+  'Nuestro grupo': { etiqueta: 'bg-crema text-ambar', fondo: 'bg-crema', solido: 'bg-ambar', texto: 'text-ambar', activo: 'aria-pressed:border-ambar aria-pressed:bg-ambar' },
 };
 const neutro: Colores = { etiqueta: 'bg-papel text-tinta', fondo: 'bg-papel', solido: 'bg-azul', texto: 'text-azul', activo: 'aria-pressed:border-azul aria-pressed:bg-azul' };
 
