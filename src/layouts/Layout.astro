@@ -50,6 +50,9 @@ const reglasEspeculacion = JSON.stringify({
     <meta name="description" content={descripcion} />
     <!-- Al seguir un enlace a otro sitio solo se envía el dominio, nunca la ruta completa -->
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <!-- Verificación de Google Search Console (propiedad https://mlkblog.github.io/mlkblog/). No es secreto.
+         Al cambiar a mlkblog.com hay que verificar de nuevo el dominio nuevo. -->
+    <meta name="google-site-verification" content="D7Xe6vzbB9lLXm_9KUZU07MpHjlPD79CNX7U2fJR1yM" />
     <link rel="canonical" href={canonica} />
     <link rel="sitemap" href={ruta("/sitemap-index.xml")} />
     <meta property="og:type" content="website" />
