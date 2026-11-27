@@ -44,16 +44,24 @@ const formas = [
 
   <!-- Cifras de impacto -->
   <section class="bg-azul" aria-labelledby="titulo-impacto">
-    <div class="contenedor grid gap-10 py-14 md:grid-cols-[1fr_2.4fr] md:items-end">
+    <div class:list={['contenedor grid gap-10 py-14 md:grid-cols-[1fr_2.4fr]', obras.length > 0 ? 'md:items-end' : 'md:items-center']}>
       <div class="flex flex-col gap-3">
         <h2 id="titulo-impacto" class="text-3xl font-extrabold text-white">Nuestro impacto hasta hoy</h2>
-        <p class="text-cielo">Cifras sumadas automáticamente a partir de las crónicas publicadas.{hayEjemplos && ' Hoy incluyen crónicas de ejemplo.'}</p>
+        {obras.length > 0 && <p class="text-cielo">Cifras sumadas automáticamente a partir de las crónicas publicadas.{hayEjemplos && ' Hoy incluyen crónicas de ejemplo.'}</p>}
       </div>
-      <div class="grid gap-8 sm:grid-cols-3">
-        <Contador valor={obras.length} etiqueta={obras.length === 1 ? 'obra social' : 'obras sociales'} acento="bg-sol" />
-        <Contador valor={personas} etiqueta="personas acompañadas" acento="bg-cielo" />
-        <Contador valor={horas} etiqueta="horas de voluntariado" acento="bg-menta" />
-      </div>
+      {obras.length > 0 ? (
+        <div class="grid gap-8 sm:grid-cols-3">
+          <Contador valor={obras.length} etiqueta={obras.length === 1 ? 'obra social' : 'obras sociales'} acento="bg-sol" />
+          <Contador valor={personas} etiqueta="personas acompañadas" acento="bg-cielo" />
+          <Contador valor={horas} etiqueta="horas de voluntariado" acento="bg-menta" />
+        </div>
+      ) : (
+        <div class="flex flex-col gap-3">
+          <span class="block h-2 w-12 rounded-full bg-sol" aria-hidden="true"></span>
+          <p class="font-display text-3xl font-extrabold text-white sm:text-4xl">Nuestra primera obra social está en camino.</p>
+          <p class="max-w-prose text-lg text-cielo">Cuando la publiquemos, aquí verás cuántas personas acompañamos y cuántas horas de voluntariado sumamos.</p>
+        </div>
+      )}
     </div>
   </section>
 

@@ -76,7 +76,7 @@ Auditoría Lighthouse del 15 nov 2026: 99–100 en rendimiento, 100 en accesibil
 
 Los contadores de la portada (obras, personas, horas) se calculan solos sumando `beneficiarios` y `horasVoluntariado` de todas las crónicas. El equipo se edita en `src/content/becarios.json`.
 
-Las dos crónicas iniciales y los perfiles del equipo son **contenido de ejemplo** (`ejemplo: true` muestra una etiqueta). Reemplázalos por información real antes de lanzar.
+Los perfiles del equipo (`src/content/becarios.json`) y la «Historia del programa» de Nosotros siguen siendo **contenido de ejemplo**: reemplázalos por información real. Las crónicas de ejemplo se retiraron el 26 nov 2026 (están en el historial de git); `ejemplo: true` en una crónica muestra una etiqueta visible. Si no hay obras sociales publicadas, la banda de impacto de la portada muestra un mensaje en vez de cifras en cero.
 
 ## Identidad visual
 
