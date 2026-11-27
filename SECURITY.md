@@ -2,7 +2,7 @@
 
 ## Reportar una vulnerabilidad
 
-Si encuentras un problema de seguridad o información personal publicada por error, **no abras un issue público**. Repórtalo en privado desde la pestaña **Security → Report a vulnerability** de este repositorio, o escribe al correo del grupo. Respondemos en máximo 5 días hábiles.
+Si encuentras un problema de seguridad o información personal publicada por error, **no abras un issue público**. Repórtalo en privado desde la pestaña **Security → Report a vulnerability** de este repositorio, o escribe a mlkscholarshipprogrambaq@gmail.com. Respondemos en máximo 5 días hábiles.
 
 Si es información personal visible en el sitio (un teléfono, una dirección, la foto de un menor sin autorización), avisa de inmediato: se retira primero y se revisa después.
 
